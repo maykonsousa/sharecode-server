@@ -7,10 +7,7 @@ import { CustomError } from '../../../exceptions/CustomError'
 
 export class ActivePost {
     constructor(
-        readonly postRepository: PostRepository,
-        readonly userRepository: UserRepository,
-        readonly tokenRepository: TokenRepository,
-        readonly sign: Sign
+        readonly postRepository: PostRepository
     ) { }
 
     async execute(id: string): Promise<void> {
