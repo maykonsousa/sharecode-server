@@ -8,7 +8,7 @@ export class ActivePostController {
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
-            await this.activePost.execute(req.body)
+            await this.activePost.execute(req.params.id)
             return res.status(204).end()
         } catch (err) {
             next(err)
