@@ -12,6 +12,8 @@ import { JSONWebToken } from '../../adapters/JSONWebToken'
 import { ActivePostController } from '../controllers/posts/ActivePostController'
 import { RemovePost } from '../../../application/usecases/posts/RemovePost/RemovePost'
 import { RemovePostController } from '../controllers/posts/RemovePostController'
+import { DeactivePost } from '../../../application/usecases/posts/DeactivePost/DeactivePost'
+import { DeactivePostController } from '../controllers/posts/DeactivePostController'
 
 const postRepository = new PostRepositoryPrisma()
 const userRepository = new UserRepositoryPrisma()
@@ -39,9 +41,15 @@ router.get('/posts', AuthMiddleware, async (req: Request, res: Response, next: N
 })
 
 router.put('/posts/:id/active', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
-    const activePost = new ActivePost(postRepository, userRepository, tokenRepository, jwt)
+    const activePost = new ActivePost(postRepository)
     const activePostController = new ActivePostController(activePost)
     return activePostController.handle(req, res, next)
+})
+
+router.put('/posts/:id/deactive', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+    const deactivePost = new DeactivePost(postRepository)
+    const deactivePostController = new DeactivePostController(deactivePost)
+    return deactivePostController.handle(req, res, next)
 })
 
 export default router
