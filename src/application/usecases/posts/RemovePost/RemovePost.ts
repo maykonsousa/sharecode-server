@@ -5,7 +5,7 @@ import { CustomError } from '../../../exceptions/CustomError'
 export class RemovePost {
     constructor(
         readonly postRepository: PostRepository,
-        readonly token: Sign
+        readonly sign: Sign
     ) { }
 
     async execute(id: string): Promise<void> {
