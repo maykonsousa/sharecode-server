@@ -10,6 +10,8 @@ import { ActivePost } from '../../../application/usecases/posts/ActivePost/Activ
 import { TokenRepositoryPrisma } from '../../repositories/database/TokenRepositoryPrisma'
 import { JSONWebToken } from '../../adapters/JSONWebToken'
 import { ActivePostController } from '../controllers/posts/ActivePostController'
+import { RemovePost } from '../../../application/usecases/posts/RemovePost/RemovePost'
+import { RemovePostController } from '../controllers/posts/RemovePostController'
 
 const postRepository = new PostRepositoryPrisma()
 const userRepository = new UserRepositoryPrisma()
@@ -24,6 +26,11 @@ router.post('/posts', AuthMiddleware, async (req: Request, res: Response, next: 
     return createPostController.handle(req, res, next)
 })
 
+router.delete('/posts/:id', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+    const removePost = new RemovePost(postRepository, jwt)
+    const removePostController = new RemovePostController(removePost)
+    return removePostController.handle(req, res, next)
+})
 
 router.get('/posts', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
     const findPosts = new FindPosts(postRepository)
@@ -31,7 +38,7 @@ router.get('/posts', AuthMiddleware, async (req: Request, res: Response, next: N
     return findPostsController.handle(req, res, next)
 })
 
-router.put('/posts/active', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
+router.put('/posts/:id/active', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
     const activePost = new ActivePost(postRepository, userRepository, tokenRepository, jwt)
     const activePostController = new ActivePostController(activePost)
     return activePostController.handle(req, res, next)
