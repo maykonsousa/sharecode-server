@@ -18,15 +18,16 @@ export class CreatePost {
         if (!input.user_id) throw new CustomError(400, 'user_id is required')
         const existsUser = await this.userRepository.find(input.user_id)
         if (!existsUser) throw new CustomError(404, 'user not found')
-        const isActive = existsUser.type !== 'user' || false
+        const IS_ACTIVE = existsUser.type !== 'user' || false
+        const IS_PRIVATE = true
         const post = new Post(
             randomUUID(),
             input.user_id,
             input.video_id,
             input.title,
             input.description,
-            true,
-            isActive
+            IS_PRIVATE,
+            IS_ACTIVE
         )
         await this.postRepository.save(post)
     }

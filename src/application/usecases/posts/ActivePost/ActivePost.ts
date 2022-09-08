@@ -28,6 +28,7 @@ export class ActivePost {
         const existsToken = await this.userRepository.find(id)
         if (!existsToken) throw new CustomError(404, 'user not found')
         if (existsToken.type === 'user') throw new CustomError(403, 'not allowed')
+        const IS_ACTIVE = true
         const post = new Post(
             existsPost.id,
             existsPost.user_id,
@@ -35,7 +36,7 @@ export class ActivePost {
             existsPost.title,
             existsPost.description,
             existsPost.is_private,
-            true
+            IS_ACTIVE
         )
         await this.postRepository.update(post)
     }
