@@ -1,13 +1,28 @@
+import 'dotenv/config'
 import { PostRepository } from '../../../../domain/repositories/PostRepository'
+import { UserRepository } from '../../../../domain/repositories/UserRepository'
+import { Sign } from '../../../../infra/adapters/Sign'
+import { CustomError } from '../../../exceptions/CustomError'
 
 export class FindPosts {
     constructor(
-        readonly postRepository: PostRepository
+        readonly postRepository: PostRepository,
+        readonly userRepository: UserRepository,
+        readonly sign: Sign
     ) { }
 
-    async execute(): Promise<FindPostsOutput[]> {
+    async execute(input: FindPostsInput): Promise<FindPostsOutput[]> {
+        let id = null
+        try {
+            id = this.sign.decode(input.token).id
+        } catch (err) {
+            throw new CustomError(401, 'invalid token')
+        }
+        const existsUser = await this.userRepository.find(id)
+        if (!existsUser) throw new CustomError(404, 'user not found')
+        if (existsUser.type === 'user') throw new CustomError(403, 'not allowed')
         const posts = await this.postRepository.findAll()
-        const output: FindPostsOutput[] =[]
+        const output: FindPostsOutput[] = []
         for (const post of posts) {
             output.push({
                 id: post.id,
@@ -20,6 +35,10 @@ export class FindPosts {
         }
         return output
     }
+}
+
+type FindPostsInput = {
+    token: string
 }
 
 type FindPostsOutput = {

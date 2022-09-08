@@ -28,8 +28,8 @@ router.post('/posts', AuthMiddleware, async (req: Request, res: Response, next: 
     return createPostController.handle(req, res, next)
 })
 
-router.get('/posts', AuthMiddleware, async (req: Request, res: Response, next: NextFunction) => {
-    const findPosts = new FindPosts(postRepository)
+router.get('/posts', async (req: Request, res: Response, next: NextFunction) => {
+    const findPosts = new FindPosts(postRepository, userRepository, sign)
     const findPostsController = new FindPostsController(findPosts)
     return findPostsController.handle(req, res, next)
 })
