@@ -8,7 +8,11 @@ export class ActivePostController {
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
-            await this.activePost.execute(req.params.id)
+            const input = {
+                id: req.params.id,
+                token: req.body.token
+            }
+            await this.activePost.execute(input)
             return res.status(204).end()
         } catch (err) {
             next(err)

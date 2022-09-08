@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 import { NextFunction, Request, Response } from 'express'
 import { CreateUser } from '../../../../application/usecases/accounts/CreateUser/CreateUser'
 

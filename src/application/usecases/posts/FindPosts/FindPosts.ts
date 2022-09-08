@@ -13,6 +13,7 @@ export class FindPosts {
                 id: post.id,
                 title: post.title,
                 description: post.description,
+                user_id: post.user_id,
                 isActive: post.is_active,
                 isPrivate: post.is_private
             })
@@ -25,6 +26,7 @@ type FindPostsOutput = {
     id: string
     title: string
     description: string
+    user_id: string
     isActive: boolean
     isPrivate: boolean
 }

@@ -8,8 +8,6 @@ import { PostRepository } from '../../../src/domain/repositories/PostRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Hash } from '../../../src/infra/adapters/Hash'
-import { PostRepositoryPrisma } from '../../../src/infra/repositories/database/PostRepositoryPrisma'
-import { UserRepositoryPrisma } from '../../../src/infra/repositories/database/UserRepositoryPrisma'
 import { PostRepositoryMemory } from '../../../src/infra/repositories/memory/PostRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 

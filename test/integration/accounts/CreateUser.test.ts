@@ -5,7 +5,6 @@ import { CreateUserInput } from '../../../src/application/usecases/accounts/Crea
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Hash } from '../../../src/infra/adapters/Hash'
-import { UserRepositoryPrisma } from '../../../src/infra/repositories/database/UserRepositoryPrisma'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
 let userRepository: UserRepository

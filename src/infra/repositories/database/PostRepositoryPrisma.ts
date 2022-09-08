@@ -130,7 +130,7 @@ export class PostRepositoryPrisma implements PostRepository {
         return posts
     }
 
-    async remove(id: string): Promise<void> {
+    async delete(id: string): Promise<void> {
         await prismaClient.posts.delete({
             where: {
                 id

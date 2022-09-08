@@ -7,10 +7,7 @@ export class PostRepositoryMemory implements PostRepository {
     async update(post: Post): Promise<void> {
         const existsPost = await this.find(post.id)
         if (!existsPost) throw new Error('post not found')
-        existsPost.title = post.title
-        existsPost.description = post.description
-        existsPost.is_active = post.is_active
-        existsPost.is_private = post.is_private
+        this.posts.splice(this.posts.indexOf(existsPost), 1, post)
     }
 
     async save(post: Post): Promise<void> {
@@ -37,7 +34,7 @@ export class PostRepositoryMemory implements PostRepository {
         return this.posts.find((post) => post.user_id === userId)
     }
 
-    async remove(id: string): Promise<void> {
+    async delete(id: string): Promise<void> {
         const newPosts = this.posts.filter((post) => post.id !== id)
         this.posts = newPosts
     }

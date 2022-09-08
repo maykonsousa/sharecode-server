@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { ResetPassword } from '../../../../application/usecases/accounts/ResetPassword/ResetPassword'
 
 export class ResetPasswordController {

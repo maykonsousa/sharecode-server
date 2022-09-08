@@ -8,7 +8,11 @@ export class DeactivePostController {
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
-            await this.deactivePost.execute(req.params.id)
+            const input = {
+                id: req.params.id,
+                token: req.body.token
+            }
+            await this.deactivePost.execute(input)
             return res.status(204).end()
         } catch (err) {
             next(err)

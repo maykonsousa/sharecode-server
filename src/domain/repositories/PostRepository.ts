@@ -8,6 +8,6 @@ export interface PostRepository {
     findAll(): Promise<Post[]>
     findPublicPost(): Promise<Post[]>
     update(post: Post): Promise<void>
-    remove(id: string): Promise<void>
+    delete(id: string): Promise<void>
     clean(): Promise<void>
 }

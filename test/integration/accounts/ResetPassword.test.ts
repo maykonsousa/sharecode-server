@@ -1,29 +1,24 @@
-import 'dotenv/config'
 import { randomBytes } from 'crypto'
+import 'dotenv/config'
 import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser/CreateUser'
 import { CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser/CreateUserInput'
+import { ForgotPassword } from '../../../src/application/usecases/accounts/ForgotPassword/ForgotPassword'
 import { ResetPassword } from '../../../src/application/usecases/accounts/ResetPassword/ResetPassword'
+import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
+import { Ejs } from '../../../src/infra/adapters/Ejs'
 import { Hash } from '../../../src/infra/adapters/Hash'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Sign } from '../../../src/infra/adapters/Sign'
-import { UserRepositoryPrisma } from '../../../src/infra/repositories/database/UserRepositoryPrisma'
-import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
-import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
-import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
-import { ForgotPassword } from '../../../src/application/usecases/accounts/ForgotPassword/ForgotPassword'
 import { Template } from '../../../src/infra/adapters/Template'
-import { Ejs } from '../../../src/infra/adapters/Ejs'
-import { Nodemailer } from '../../../src/infra/adapters/Nodemailer'
-import { Mail } from '../../../src/infra/adapters/Mail'
-import { TokenRepositoryPrisma } from '../../../src/infra/repositories/database/TokenRepositoryPrisma'
+import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
+import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
 let userRepository: UserRepository
 let tokenRepository: TokenRepository
 let sign: Sign
 let hash: Hash
-let mail: Mail
 let template: Template
 let inputUser: CreateUserInput
 
@@ -36,7 +31,6 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     sign = new JSONWebToken()
-    mail = new Nodemailer()
     template = new Ejs()
     const random = randomBytes(16).toString('hex')
     inputUser = {

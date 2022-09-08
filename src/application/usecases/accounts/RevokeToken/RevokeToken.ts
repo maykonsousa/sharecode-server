@@ -15,7 +15,10 @@ export class RevokeToken {
         const existsToken = await this.tokenRepository.find(id)
         if (!existsToken) throw new CustomError(404, 'token not found')
         if (existsToken.isRevoked) throw new CustomError(422, 'token already revoked')
-        const encryptedToken = this.sign.encode(existsToken.userId, '24h')
+        const encryptedToken = this.sign.encode({
+            id: existsToken.userId,
+            type: existsToken.type
+        }, '24h')
         const token = new Token(
             existsToken.id,
             encryptedToken,

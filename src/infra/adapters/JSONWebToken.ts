@@ -3,9 +3,8 @@ import jsonwebtoken from 'jsonwebtoken'
 import { Sign } from './Sign'
 
 export class JSONWebToken implements Sign {
-    encode(subject: string, expiresIn: string | number): string {
-        return jsonwebtoken.sign({}, process.env.JWT_KEY, {
-            subject,
+    encode(payload: object, expiresIn: string | number): string {
+        return jsonwebtoken.sign(payload, process.env.JWT_KEY, {
             expiresIn
         })
     }

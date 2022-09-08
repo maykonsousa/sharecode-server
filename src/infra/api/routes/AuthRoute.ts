@@ -1,21 +1,15 @@
-import { Router, Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response, Router } from 'express'
 import { AuthenticateUser } from '../../../application/usecases/accounts/AuthenticateUser/AuthenticateUser'
+import { RevokeToken } from '../../../application/usecases/accounts/RevokeToken/RevokeToken'
 import { Bcrypt } from '../../../infra/adapters/Bcrypt'
 import { JSONWebToken } from '../../../infra/adapters/JSONWebToken'
-import { AuthenticateUserController } from '../controllers/accounts/AuthenticateUserController'
-import { UserRepositoryPrisma } from '../../repositories/database/UserRepositoryPrisma'
-import { UserRepository } from '../../../domain/repositories/UserRepository'
-import { TokenRepositoryMemory } from '../../repositories/memory/TokenRepositoryMemory'
 import { TokenRepositoryPrisma } from '../../repositories/database/TokenRepositoryPrisma'
-import { RevokeToken } from '../../../application/usecases/accounts/RevokeToken/RevokeToken'
+import { UserRepositoryPrisma } from '../../repositories/database/UserRepositoryPrisma'
+import { AuthenticateUserController } from '../controllers/accounts/AuthenticateUserController'
 import { RevokeTokenController } from '../controllers/accounts/RevokeTokenController'
-import { AuthenticateUserGitHub } from '../../../application/usecases/accounts/AuthenticateUserGitHub/AuthenticateUserGitHub'
-import { AuthenticateUserGitHubController } from '../controllers/accounts/GetUserGitHubController'
-import { GitHubGateway } from '../../gateways/GitHubGateway'
 
 const userRepository = new UserRepositoryPrisma()
 const tokenRepository = new TokenRepositoryPrisma()
-const gitHubGateway = new GitHubGateway()
 const hash = new Bcrypt()
 const sign = new JSONWebToken()
 
@@ -26,7 +20,6 @@ router.post('/auth', async (req: Request, res: Response, next: NextFunction) => 
     const authenticateUserController = new AuthenticateUserController(authenticateUser)
     return authenticateUserController.handle(req, res, next)
 })
-
 
 router.post('/auth/revoke', async (req: Request, res: Response, next: NextFunction) => {
     const revokeToken = new RevokeToken(tokenRepository, sign)

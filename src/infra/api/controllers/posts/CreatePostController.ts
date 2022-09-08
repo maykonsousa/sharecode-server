@@ -1,5 +1,4 @@
-/* eslint-disable consistent-return */
-import { Request, Response, NextFunction } from 'express'
+import { NextFunction, Request, Response } from 'express'
 import { CreatePost } from '../../../../application/usecases/posts/CreatePost/CreatePost'
 
 export class CreatePostController {

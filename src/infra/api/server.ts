@@ -1,5 +1,5 @@
-import 'dotenv/config'
 import cors from 'cors'
+import 'dotenv/config'
 import express, { NextFunction, Request, Response } from 'express'
 import { CustomError } from '../../application/exceptions/CustomError'
 

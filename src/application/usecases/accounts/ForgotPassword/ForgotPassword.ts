@@ -1,14 +1,14 @@
 import { randomUUID } from 'crypto'
+import { CurrentDate } from '../../../../domain/entities/CurrentDate'
 import { Message } from '../../../../domain/entities/Message'
 import { Token } from '../../../../domain/entities/Token'
 import { TokenRepository } from '../../../../domain/repositories/TokenRepository'
 import { UserRepository } from '../../../../domain/repositories/UserRepository'
 import { Mail } from '../../../../infra/adapters/Mail'
-import { Template } from '../../../../infra/adapters/Template'
 import { Sign } from '../../../../infra/adapters/Sign'
+import { Template } from '../../../../infra/adapters/Template'
 import { CustomError } from '../../../exceptions/CustomError'
 import { ForgotPasswordOutput } from './ForgotPasswordOutput'
-import { CurrentDate } from '../../../../domain/entities/CurrentDate'
 
 export class ForgotPassword {
     constructor(
@@ -23,7 +23,10 @@ export class ForgotPassword {
         if (!email) throw new CustomError(400, 'email is required')
         const existsUser = await this.userRepository.findByEmail(email)
         if (!existsUser) return
-        const encodedToken = this.sign.encode(existsUser.id, '15m')
+        const encodedToken = this.sign.encode({
+            id: existsUser.id,
+            type: existsUser.type
+        }, '15m')
         const currentDate = new CurrentDate()
         const expiredAt = currentDate.addMinutes(15)
         const token = new Token(

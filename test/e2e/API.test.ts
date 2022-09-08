@@ -1,6 +1,6 @@
+import axios from 'axios'
 import { randomBytes } from 'crypto'
 import { CreateUserInput } from '../../src/application/usecases/accounts/CreateUser/CreateUserInput'
-import axios from 'axios'
 
 const request = axios.create({
     baseURL: 'http://localhost:3000/v1/',

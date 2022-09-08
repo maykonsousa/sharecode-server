@@ -24,7 +24,10 @@ export class AuthenticateUser {
         if (!existsUser) throw new CustomError(401, 'invalid login')
         const isPasswordMath = this.hash.decrypt(input.password,existsUser.password.getValue())
         if (!isPasswordMath) throw new CustomError(401, 'invalid login')
-        const encodedToken = this.sign.encode(existsUser.id, '15m')
+        const encodedToken = this.sign.encode({
+            id: existsUser.id,
+            type: existsUser.type
+        }, '15s')
         const expiresAt = new CurrentDate().addHours(1)
         const token = new Token(
             randomUUID(),

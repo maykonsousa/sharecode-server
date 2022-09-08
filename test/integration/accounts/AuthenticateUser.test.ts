@@ -1,19 +1,16 @@
-import 'dotenv/config'
 import { randomBytes } from 'crypto'
+import 'dotenv/config'
 import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser/AuthenticateUser'
 import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser/CreateUser'
 import { CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser/CreateUserInput'
+import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Hash } from '../../../src/infra/adapters/Hash'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Sign } from '../../../src/infra/adapters/Sign'
-import { UserRepositoryPrisma } from '../../../src/infra/repositories/database/UserRepositoryPrisma'
-import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
-import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
-import { TokenRepositoryPrisma } from '../../../src/infra/repositories/database/TokenRepositoryPrisma'
-
+import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
 let userRepository: UserRepository
 let tokenRepository: TokenRepository

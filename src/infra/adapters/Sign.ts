@@ -1,4 +1,4 @@
 export interface Sign {
-    encode(subject: string, expiresIn: string | number): string
+    encode(payload: object, expiresIn: string | number): string
     decode(token: string): any
 }
