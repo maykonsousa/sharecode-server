@@ -19,7 +19,7 @@ export class CreatePost {
         const existsUser = await this.userRepository.find(input.user_id)
         if (!existsUser) throw new CustomError(404, 'user not found')
         const IS_ACTIVE = existsUser.type !== 'user' || false
-        const IS_PRIVATE = true
+        const IS_PRIVATE = false
         const post = new Post(
             randomUUID(),
             input.user_id,
