@@ -3,6 +3,7 @@ import { ActivePost } from '../../../application/usecases/posts/ActivePost/Activ
 import { CreatePost } from '../../../application/usecases/posts/CreatePost/CreatePost'
 import { DeactivePost } from '../../../application/usecases/posts/DeactivePost/DeactivePost'
 import { FindPosts } from '../../../application/usecases/posts/FindPosts/FindPosts'
+import { FindPublicPosts } from '../../../application/usecases/posts/FindPublicPosts/FindPublicPosts'
 import { RemovePost } from '../../../application/usecases/posts/RemovePost/RemovePost'
 import { JSONWebToken } from '../../adapters/JSONWebToken'
 import { PostRepositoryPrisma } from '../../repositories/database/PostRepositoryPrisma'
@@ -12,6 +13,7 @@ import { ActivePostController } from '../controllers/posts/ActivePostController'
 import { CreatePostController } from '../controllers/posts/CreatePostController'
 import { DeactivePostController } from '../controllers/posts/DeactivePostController'
 import { FindPostsController } from '../controllers/posts/FindPostsController'
+import { FindPublicPostsController } from '../controllers/posts/FindPublicPostsController'
 import { RemovePostController } from '../controllers/posts/RemovePostController'
 import AuthMiddleware from '../middlewares/AuthMiddleware'
 
@@ -32,6 +34,12 @@ router.get('/posts', async (req: Request, res: Response, next: NextFunction) => 
     const findPosts = new FindPosts(postRepository, userRepository, sign)
     const findPostsController = new FindPostsController(findPosts)
     return findPostsController.handle(req, res, next)
+})
+
+router.get('/posts/public', async (req: Request, res: Response, next: NextFunction) => {
+    const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign)
+    const findPublicPostsController = new FindPublicPostsController(findPublicPosts)
+    return findPublicPostsController.handle(req, res, next)
 })
 
 router.put('/posts/:id/active', async (req: Request, res: Response, next: NextFunction) => {
