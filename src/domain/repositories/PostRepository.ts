@@ -6,7 +6,7 @@ export interface PostRepository {
     findByURL(url: string): Promise<Post>
     findByUser(userId: string): Promise<Post>
     findAll(): Promise<Post[]>
-    findPublicPost(): Promise<Post[]>
+    findPublicPosts(): Promise<Post[]>
     update(post: Post): Promise<void>
     delete(id: string): Promise<void>
     clean(): Promise<void>

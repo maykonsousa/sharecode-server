@@ -34,7 +34,7 @@ export class PostRepositoryPrisma implements PostRepository {
         })
     }
 
-    async findPublicPost(): Promise<Post[]> {
+    async findPublicPosts(): Promise<Post[]> {
         const postsData = await prismaClient.posts.findMany({
             where: {
                 is_private: false,

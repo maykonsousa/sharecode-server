@@ -18,7 +18,7 @@ export class PostRepositoryMemory implements PostRepository {
         return this.posts
     }
 
-    async findPublicPost(): Promise<Post[]> {
+    async findPublicPosts(): Promise<Post[]> {
         return this.posts.filter((post) => post.is_active && !post.is_private)
     }
 
