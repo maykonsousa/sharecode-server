@@ -22,16 +22,16 @@ export class PostRepositoryMemory implements PostRepository {
         return this.posts.filter((post) => post.is_active && !post.is_private)
     }
 
-    async find(id: string): Promise<Post | undefined> {
+    async find(id: string): Promise<Post> {
         return this.posts.find((post) => post.id === id)
     }
 
-    async findByURL(url: string): Promise<Post | undefined> {
+    async findByURL(url: string): Promise<Post> {
         return this.posts.find((post) => post.video_id === url)
     }
 
-    async findByUser(userId: string): Promise<Post | undefined> {
-        return this.posts.find((post) => post.user_id === userId)
+    async findByUser(userId: string): Promise<Post[]> {
+        return this.posts.filter((post) => post.user_id === userId)
     }
 
     async delete(id: string): Promise<void> {

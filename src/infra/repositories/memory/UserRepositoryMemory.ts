@@ -8,11 +8,11 @@ export class UserRepositoryMemory implements UserRepository {
         return this.users
     }
 
-    async find(id: string): Promise<User | undefined> {
+    async find(id: string): Promise<User> {
         return this.users.find((user) => user.id === id)
     }
 
-    async findByEmail(email: string): Promise<User | undefined> {
+    async findByEmail(email: string): Promise<User> {
         return this.users.find((user) => user.email.getValue() === email)
     }
 

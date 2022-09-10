@@ -93,22 +93,28 @@ export class PostRepositoryPrisma implements PostRepository {
         )
     }
 
-    async findByUser(userId: string): Promise<Post> {
-        const postData = await prismaClient.posts.findFirst({
+    async findByUser(userId: string): Promise<Post[]> {
+        const postsData = await prismaClient.posts.findMany({
             where: {
                 user_id: userId
             }
         })
-        if (!postData) return
-        return new Post(
-            postData.id,
-            postData.user_id,
-            postData.video_id,
-            postData.title,
-            postData.description,
-            postData.is_private,
-            postData.is_active
-        )
+        if (!postsData) return
+        const posts: Post[] = []
+        for (const postData of postsData) {
+            posts.push(
+                new Post(
+                    postData.id,
+                    postData.user_id,
+                    postData.video_id,
+                    postData.title,
+                    postData.description,
+                    postData.is_private,
+                    postData.is_active
+                )
+            )
+        }
+        return posts
     }
 
     async findAll(): Promise<Post[]> {
