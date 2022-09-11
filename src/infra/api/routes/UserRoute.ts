@@ -4,7 +4,6 @@ import { CreateUser } from '../../../application/usecases/accounts/CreateUser/Cr
 import { ForgotPassword } from '../../../application/usecases/accounts/ForgotPassword/ForgotPassword'
 import { GetUserGitHub } from '../../../application/usecases/accounts/GetUserGitHub/GetUserGitHub'
 import { ResetPassword } from '../../../application/usecases/accounts/ResetPassword/ResetPassword'
-import { FindPostsByUser } from '../../../application/usecases/posts/FindPostsByUser/FindPostsByUser'
 import { Bcrypt } from '../../../infra/adapters/Bcrypt'
 import { Ejs } from '../../adapters/Ejs'
 import { JSONWebToken } from '../../adapters/JSONWebToken'
@@ -17,7 +16,6 @@ import { CreateUserController } from '../controllers/accounts/CreateUserControll
 import { ForgotPasswordContoller } from '../controllers/accounts/ForgotPasswordContoller'
 import { AuthenticateUserGitHubController } from '../controllers/accounts/GetUserGitHubController'
 import { ResetPasswordController } from '../controllers/accounts/ResetPasswordController'
-import { FindPostsByUserController } from '../controllers/posts/FindPostsByUserController'
 
 const router = Router()
 
@@ -34,12 +32,6 @@ router.post('/users', async (req: Request, res: Response, next: NextFunction) =>
     const createUser = new CreateUser(userRepository, hash)
     const createUserController = new CreateUserController(createUser)
     return createUserController.handle(req, res, next)
-})
-
-router.get('/users/:id/posts', async (req: Request, res: Response, next: NextFunction) => {
-    const findPostsByUser = new FindPostsByUser(postRepository, userRepository, sign)
-    const findPostsByUserController = new FindPostsByUserController(findPostsByUser)
-    return findPostsByUserController.handle(req, res, next)
 })
 
 router.get('/users/github/:code', async (req: Request, res: Response, next: NextFunction) => {
