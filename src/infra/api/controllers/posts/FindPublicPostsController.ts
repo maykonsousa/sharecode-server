@@ -8,7 +8,12 @@ export class FindPublicPostsController {
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {
-            const posts = await this.findPublicPosts.execute(req.body)
+            const input = {
+                page: parseInt(String(req.query.page)),
+                limit: parseInt(String(req.query.limit)),
+                token: req.body.token
+            }
+            const posts = await this.findPublicPosts.execute(input)
             return res.status(200).json(posts)
         } catch (err) {
             next(err)

@@ -12,6 +12,7 @@ import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Hash } from '../../../src/infra/adapters/Hash'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
+import { Pagination } from '../../../src/infra/adapters/Pagination'
 import { Sign } from '../../../src/infra/adapters/Sign'
 import { PostRepositoryMemory } from '../../../src/infra/repositories/memory/PostRepositoryMemory'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
@@ -24,6 +25,7 @@ let hash: Hash
 let sign: Sign
 let inputUser: CreateUserInput
 let inputPost: CreatePostInput
+let pagination: Pagination
 
 beforeEach(async () => {
     postRepository = new PostRepositoryMemory()
@@ -31,6 +33,7 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     sign = new JSONWebToken()
+    pagination = new Pagination()
     const random = randomBytes(16).toString('hex')
     inputUser = {
         gh_username: random,
@@ -57,7 +60,7 @@ test('Should find all public posts', async () => {
     const [user] = await userRepository.findAll()
     inputPost.user_id = user.id
     await createPost.execute(inputPost)
-    const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign)
+    const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign, pagination)
     const posts = await findPublicPosts.execute({
         token: outputAuthenticateUser.token
     })

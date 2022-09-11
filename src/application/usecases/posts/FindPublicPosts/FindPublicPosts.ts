@@ -1,5 +1,6 @@
 import { PostRepository } from '../../../../domain/repositories/PostRepository'
 import { UserRepository } from '../../../../domain/repositories/UserRepository'
+import { Pagination } from '../../../../infra/adapters/Pagination'
 import { Sign } from '../../../../infra/adapters/Sign'
 import { CustomError } from '../../../exceptions/CustomError'
 
@@ -7,8 +8,9 @@ export class FindPublicPosts {
     constructor(
         readonly postRepository: PostRepository,
         readonly userRepository: UserRepository,
-        readonly sign: Sign
-    ) {}
+        readonly sign: Sign,
+        readonly pagination: Pagination
+    ) { }
 
     async execute(input: FindPublicPostsInput): Promise<FindPublicPostsOutput[]> {
         let id = null
@@ -33,11 +35,13 @@ export class FindPublicPosts {
                 }
             )
         }
-        return output
+        return this.pagination.execute(output, input.page, input.limit)
     }
 }
 
 type FindPublicPostsInput = {
+    page?: number
+    limit?: number
     token: string
 }
 

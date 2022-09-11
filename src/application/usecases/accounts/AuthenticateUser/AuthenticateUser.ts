@@ -27,7 +27,7 @@ export class AuthenticateUser {
         const encodedToken = this.sign.encode({
             id: existsUser.id,
             type: existsUser.type
-        }, '15s')
+        }, '1h')
         const expiresAt = new CurrentDate().addHours(1)
         const token = new Token(
             randomUUID(),

@@ -7,6 +7,7 @@ import { FindPostsByUser } from '../../../application/usecases/posts/FindPostsBy
 import { FindPublicPosts } from '../../../application/usecases/posts/FindPublicPosts/FindPublicPosts'
 import { RemovePost } from '../../../application/usecases/posts/RemovePost/RemovePost'
 import { JSONWebToken } from '../../adapters/JSONWebToken'
+import { Pagination } from '../../adapters/Pagination'
 import { PostRepositoryPrisma } from '../../repositories/database/PostRepositoryPrisma'
 import { TokenRepositoryPrisma } from '../../repositories/database/TokenRepositoryPrisma'
 import { UserRepositoryPrisma } from '../../repositories/database/UserRepositoryPrisma'
@@ -23,6 +24,7 @@ const postRepository = new PostRepositoryPrisma()
 const userRepository = new UserRepositoryPrisma()
 const tokenRepository = new TokenRepositoryPrisma()
 const sign = new JSONWebToken()
+const pagination = new Pagination()
 
 const router = Router()
 
@@ -33,7 +35,7 @@ router.post('/posts', AuthMiddleware, async (req: Request, res: Response, next: 
 })
 
 router.get('/posts', async (req: Request, res: Response, next: NextFunction) => {
-    const findPosts = new FindPosts(postRepository, userRepository, sign)
+    const findPosts = new FindPosts(postRepository, userRepository, sign, pagination)
     const findPostsController = new FindPostsController(findPosts)
     return findPostsController.handle(req, res, next)
 })
@@ -45,7 +47,7 @@ router.get('/posts/user/:id', async (req: Request, res: Response, next: NextFunc
 })
 
 router.get('/posts/public', async (req: Request, res: Response, next: NextFunction) => {
-    const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign)
+    const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign, pagination)
     const findPublicPostsController = new FindPublicPostsController(findPublicPosts)
     return findPublicPostsController.handle(req, res, next)
 })
