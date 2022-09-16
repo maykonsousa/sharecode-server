@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
-import { ResetPassword } from '../../../../application/usecases/accounts/ResetPassword/ResetPassword'
+import { ResetPassword } from '../../../application/usecases/accounts/ResetPassword/ResetPassword'
+
 
 export class ResetPasswordController {
     constructor(
-        readonly resetPassword: ResetPassword
+        private readonly resetPassword: ResetPassword
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

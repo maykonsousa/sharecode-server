@@ -1,9 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
-import { RevokeToken } from '../../../../application/usecases/accounts/RevokeToken/RevokeToken'
+import { RevokeToken } from '../../../application/usecases/accounts/RevokeToken/RevokeToken'
+
 
 export class RevokeTokenController {
     constructor(
-        readonly revokeToken: RevokeToken
+        private readonly revokeToken: RevokeToken
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

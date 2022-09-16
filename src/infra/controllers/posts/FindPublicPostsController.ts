@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import { FindPublicPosts } from '../../../../application/usecases/posts/FindPublicPosts/FindPublicPosts'
+import { FindPublicPosts } from '../../../application/usecases/posts/FindPublicPosts/FindPublicPosts'
 
 export class FindPublicPostsController {
     constructor(
-        readonly findPublicPosts: FindPublicPosts
+        private readonly findPublicPosts: FindPublicPosts
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

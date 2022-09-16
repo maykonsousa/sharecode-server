@@ -1,9 +1,9 @@
 import { NextFunction, Request, Response } from 'express'
-import { RemovePost } from '../../../../application/usecases/posts/RemovePost/RemovePost'
+import { ActivePost } from '../../../application/usecases/posts/ActivePost/ActivePost'
 
-export class RemovePostController {
+export class ActivePostController {
     constructor(
-        readonly removePost: RemovePost
+        private readonly activePost: ActivePost
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
@@ -12,7 +12,7 @@ export class RemovePostController {
                 id: req.params.id,
                 token: req.body.token
             }
-            await this.removePost.execute(input)
+            await this.activePost.execute(input)
             return res.status(204).end()
         } catch (err) {
             next(err)

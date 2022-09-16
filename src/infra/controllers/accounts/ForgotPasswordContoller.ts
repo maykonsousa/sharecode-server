@@ -1,10 +1,10 @@
 import { NextFunction, Request, Response } from 'express'
-import { ForgotPassword } from '../../../../application/usecases/accounts/ForgotPassword/ForgotPassword'
+import { ForgotPassword } from '../../../application/usecases/accounts/ForgotPassword/ForgotPassword'
 
 export class ForgotPasswordContoller {
     constructor(
-        readonly forgotPassword: ForgotPassword
-    ) {}
+        private readonly forgotPassword: ForgotPassword
+    ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
         try {

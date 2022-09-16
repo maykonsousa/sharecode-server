@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
 import { CustomError } from '../../../application/exceptions/CustomError'
-import { JSONWebToken } from '../../../infra/adapters/JSONWebToken'
+import { JSONWebToken } from '../../adapters/JSONWebToken'
 
 export default (req: Request, res: Response, next: NextFunction) => {
     const { authorization } = req.headers
