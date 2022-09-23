@@ -1,18 +1,20 @@
-import { PostRepository } from '../../../../domain/repositories/PostRepository'
-import { UserRepository } from '../../../../domain/repositories/UserRepository'
-import { Pagination } from '../../../../infra/adapters/Pagination'
-import { Sign } from '../../../../infra/adapters/Sign'
-import { CustomError } from '../../../exceptions/CustomError'
+import { PostRepository } from '../../../domain/repositories/PostRepository'
+import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { Pagination } from '../../../infra/adapters/Pagination'
+import { Sign } from '../../../infra/adapters/Sign'
+import { CustomError } from '../../exceptions/CustomError'
+import { MissingParamError } from '../../exceptions/MissingParamError'
 
 export class FindPublicPosts {
     constructor(
-        readonly postRepository: PostRepository,
-        readonly userRepository: UserRepository,
-        readonly sign: Sign,
-        readonly pagination: Pagination
+        private readonly postRepository: PostRepository,
+        private readonly userRepository: UserRepository,
+        private readonly sign: Sign,
+        private readonly pagination: Pagination
     ) { }
 
     async execute(input: FindPublicPostsInput): Promise<FindPublicPostsOutput[]> {
+        if (!input.token) throw new MissingParamError('token is required')
         let id = null
         try {
             id = this.sign.decode(input.token).id

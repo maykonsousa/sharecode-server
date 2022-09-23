@@ -1,22 +1,29 @@
-import { User } from '../../../../domain/entities/User'
-import { TokenRepository } from '../../../../domain/repositories/TokenRepository'
-import { UserRepository } from '../../../../domain/repositories/UserRepository'
-import { Hash } from '../../../../infra/adapters/Hash'
-import { Sign } from '../../../../infra/adapters/Sign'
-import { CustomError } from '../../../exceptions/CustomError'
-import { ResetPasswordInput } from './ResetPasswordInput'
+import { User } from '../../../domain/entities/User'
+import { TokenRepository } from '../../../domain/repositories/TokenRepository'
+import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { Hash } from '../../../infra/adapters/Hash'
+import { Sign } from '../../../infra/adapters/Sign'
+import { Validator } from '../../../infra/adapters/Validator'
+import { CustomError } from '../../exceptions/CustomError'
 
 export class ResetPassword {
+    private readonly fieldsRequired: string[]
+
     constructor(
-        readonly userRepository: UserRepository,
-        readonly tokenRepository: TokenRepository,
-        readonly hash: Hash,
-        readonly sign: Sign
-    ) { }
+        private readonly userRepository: UserRepository,
+        private readonly tokenRepository: TokenRepository,
+        private readonly hash: Hash,
+        private readonly sign: Sign,
+        private readonly validator: Validator
+    ) { 
+        this.fieldsRequired = [
+            'token',
+            'password'
+        ]
+    }
 
     async execute(input: ResetPasswordInput): Promise<void> {
-        if (!input.token) throw new CustomError(400, 'token is required')
-        if (!input.password) throw new CustomError(400, 'password is required')
+        this.validator.isMissingParam(this.fieldsRequired, input)
         const existsToken = await this.tokenRepository.find(input.token)
         if (!existsToken) throw new CustomError(404, 'token not found')
         if (existsToken.type !== 'forgot_password') throw new CustomError(403, 'not allowed')
@@ -42,4 +49,9 @@ export class ResetPassword {
         await this.userRepository.update(user)
         await this.tokenRepository.delete(existsToken.id)
     }
+}
+
+export type ResetPasswordInput = {
+    token: string
+    password: string
 }

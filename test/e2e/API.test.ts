@@ -1,12 +1,11 @@
 import axios from 'axios'
 import { randomBytes } from 'crypto'
-import { CreateUserInput } from '../../src/application/usecases/accounts/CreateUser/CreateUserInput'
 
 const request = axios.create({
     baseURL: 'http://localhost:3000/v1/',
     validateStatus: () => true,
 })
-let inputUser: CreateUserInput
+let inputUser = null
 
 beforeEach(async () => {
     const random = randomBytes(16).toString('hex')

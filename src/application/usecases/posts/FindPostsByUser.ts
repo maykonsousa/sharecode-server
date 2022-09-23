@@ -1,19 +1,27 @@
 import 'dotenv/config'
-import { PostRepository } from '../../../../domain/repositories/PostRepository'
-import { UserRepository } from '../../../../domain/repositories/UserRepository'
-import { Sign } from '../../../../infra/adapters/Sign'
-import { CustomError } from '../../../exceptions/CustomError'
+import { PostRepository } from '../../../domain/repositories/PostRepository'
+import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { Sign } from '../../../infra/adapters/Sign'
+import { Validator } from '../../../infra/adapters/Validator'
+import { CustomError } from '../../exceptions/CustomError'
 
 export class FindPostsByUser {
+    private readonly fieldsRequired: string[]
+
     constructor(
-        readonly postRepository: PostRepository,
-        readonly userRepository: UserRepository,
-        readonly sign: Sign
-    ) { }
+        private readonly postRepository: PostRepository,
+        private readonly userRepository: UserRepository,
+        private readonly sign: Sign,
+        private readonly validator: Validator
+    ) { 
+        this.fieldsRequired = [
+            'id',
+            'token'
+        ]
+    }
 
     async execute(input: FindPostsByUserInput): Promise<FindPostsByUserOutput[]> {
-        if (!input.id) throw new CustomError(400, 'id is required')
-        if (!input.token) throw new CustomError(400, 'token is required')
+        this.validator.isMissingParam(this.fieldsRequired, input)
         let id = null
         try {
             id = this.sign.decode(input.token).id

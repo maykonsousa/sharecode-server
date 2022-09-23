@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ForgotPassword } from '../../../application/usecases/accounts/ForgotPassword/ForgotPassword'
+import { ForgotPassword } from '../../../application/usecases/accounts/ForgotPassword'
 
 export class ForgotPasswordContoller {
     constructor(

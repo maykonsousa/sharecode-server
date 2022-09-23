@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ActivePost } from '../../../application/usecases/posts/ActivePost/ActivePost'
+import { ActivePost } from '../../../application/usecases/posts/ActivePost'
 
 export class ActivePostController {
     constructor(

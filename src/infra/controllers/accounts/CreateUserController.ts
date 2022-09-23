@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { CreateUser } from '../../../application/usecases/accounts/CreateUser/CreateUser'
+import { CreateUser } from '../../../application/usecases/accounts/CreateUser'
 
 export class CreateUserController {
     constructor(

@@ -1,8 +1,7 @@
 import { randomBytes } from 'crypto'
 import 'dotenv/config'
-import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser/CreateUser'
-import { CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser/CreateUserInput'
-import { ForgotPassword } from '../../../src/application/usecases/accounts/ForgotPassword/ForgotPassword'
+import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
+import { ForgotPassword } from '../../../src/application/usecases/accounts/ForgotPassword'
 import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
@@ -13,6 +12,7 @@ import { Mail } from '../../../src/infra/adapters/Mail'
 import { Nodemailer } from '../../../src/infra/adapters/Nodemailer'
 import { Sign } from '../../../src/infra/adapters/Sign'
 import { Template } from '../../../src/infra/adapters/Template'
+import { Validator } from '../../../src/infra/adapters/Validator'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
@@ -22,7 +22,8 @@ let sign: Sign
 let hash: Hash
 let mail: Mail
 let template: Template
-let inputUser: CreateUserInput
+let validator: Validator
+let inputUser = null
 
 beforeEach(async () => {
     userRepository = new UserRepositoryMemory()
@@ -31,6 +32,7 @@ beforeEach(async () => {
     sign = new JSONWebToken()
     mail = new Nodemailer()
     template = new Ejs()
+    validator = new Validator()
     const random = randomBytes(16).toString('hex')
     inputUser = {
         gh_username: random,
@@ -42,7 +44,7 @@ beforeEach(async () => {
 })
 
 test('Should forgot password', async () => {
-    const createUser = new CreateUser(userRepository, hash)
+    const createUser = new CreateUser(userRepository, hash, validator)
     await createUser.execute(inputUser)
     const mailMock: Mail = {
         send: jest.fn(async (message) => {

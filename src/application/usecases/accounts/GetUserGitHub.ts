@@ -1,13 +1,13 @@
-import { GitHubGateway } from '../../../../infra/gateways/GitHubGateway'
-import { CustomError } from '../../../exceptions/CustomError'
+import { GitHubGateway } from '../../../infra/gateways/GitHubGateway'
+import { MissingParamError } from '../../exceptions/MissingParamError'
 
 export class GetUserGitHub {
     constructor(
-        readonly gitHubGateway: GitHubGateway
+        private readonly gitHubGateway: GitHubGateway
     ) {}
 
     async execute(access_token: string): Promise<GetUserGitHubOutput> {
-        if (!access_token) throw new CustomError(400, 'access token is required')
+        if (!access_token) throw new MissingParamError('access token is required')
         const user = await this.gitHubGateway.getUser(access_token)
         return {
             gh_username: user.login,

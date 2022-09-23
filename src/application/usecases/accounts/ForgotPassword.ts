@@ -1,26 +1,25 @@
 import { randomUUID } from 'crypto'
-import { CurrentDate } from '../../../../domain/entities/CurrentDate'
-import { Message } from '../../../../domain/entities/Message'
-import { Token } from '../../../../domain/entities/Token'
-import { TokenRepository } from '../../../../domain/repositories/TokenRepository'
-import { UserRepository } from '../../../../domain/repositories/UserRepository'
-import { Mail } from '../../../../infra/adapters/Mail'
-import { Sign } from '../../../../infra/adapters/Sign'
-import { Template } from '../../../../infra/adapters/Template'
-import { CustomError } from '../../../exceptions/CustomError'
-import { ForgotPasswordOutput } from './ForgotPasswordOutput'
+import { CurrentDate } from '../../../domain/entities/CurrentDate'
+import { Message } from '../../../domain/entities/Message'
+import { Token } from '../../../domain/entities/Token'
+import { TokenRepository } from '../../../domain/repositories/TokenRepository'
+import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { Mail } from '../../../infra/adapters/Mail'
+import { Sign } from '../../../infra/adapters/Sign'
+import { Template } from '../../../infra/adapters/Template'
+import { MissingParamError } from '../../exceptions/MissingParamError'
 
 export class ForgotPassword {
     constructor(
-        readonly userRepository: UserRepository,
-        readonly tokenRepository: TokenRepository,
-        readonly sign: Sign,
-        readonly mail: Mail,
-        readonly template: Template
+        private readonly userRepository: UserRepository,
+        private readonly tokenRepository: TokenRepository,
+        private readonly sign: Sign,
+        private readonly mail: Mail,
+        private readonly template: Template
     ) { }
 
     async execute(email: string): Promise<ForgotPasswordOutput> {
-        if (!email) throw new CustomError(400, 'email is required')
+        if (!email) throw new MissingParamError('email is required')
         const existsUser = await this.userRepository.findByEmail(email)
         if (!existsUser) return
         const encodedToken = this.sign.encode({
@@ -59,4 +58,8 @@ export class ForgotPassword {
             token: token.id
         }
     }
+}
+
+export type ForgotPasswordOutput = {
+    token: string
 }

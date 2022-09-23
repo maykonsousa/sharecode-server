@@ -1,24 +1,26 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { CustomError } from './application/exceptions/CustomError'
-import { AuthenticateUser } from './application/usecases/accounts/AuthenticateUser/AuthenticateUser'
-import { AuthenticateUserGitHub } from './application/usecases/accounts/AuthenticateUserGitHub/AuthenticateUserGitHub'
-import { CreateUser } from './application/usecases/accounts/CreateUser/CreateUser'
-import { ForgotPassword } from './application/usecases/accounts/ForgotPassword/ForgotPassword'
-import { GetUserGitHub } from './application/usecases/accounts/GetUserGitHub/GetUserGitHub'
-import { ResetPassword } from './application/usecases/accounts/ResetPassword/ResetPassword'
-import { RevokeToken } from './application/usecases/accounts/RevokeToken/RevokeToken'
-import { ActivePost } from './application/usecases/posts/ActivePost/ActivePost'
-import { CreatePost } from './application/usecases/posts/CreatePost/CreatePost'
-import { DeactivePost } from './application/usecases/posts/DeactivePost/DeactivePost'
-import { FindPosts } from './application/usecases/posts/FindPosts/FindPosts'
-import { FindPostsByUser } from './application/usecases/posts/FindPostsByUser/FindPostsByUser'
-import { FindPublicPosts } from './application/usecases/posts/FindPublicPosts/FindPublicPosts'
-import { RemovePost } from './application/usecases/posts/RemovePost/RemovePost'
+import { MissingParamError } from './application/exceptions/MissingParamError'
+import { AuthenticateUser } from './application/usecases/accounts/AuthenticateUser'
+import { AuthenticateUserGitHub } from './application/usecases/accounts/AuthenticateUserGitHub'
+import { CreateUser } from './application/usecases/accounts/CreateUser'
+import { ForgotPassword } from './application/usecases/accounts/ForgotPassword'
+import { GetUserGitHub } from './application/usecases/accounts/GetUserGitHub'
+import { ResetPassword } from './application/usecases/accounts/ResetPassword'
+import { RevokeToken } from './application/usecases/accounts/RevokeToken'
+import { ActivePost } from './application/usecases/posts/ActivePost'
+import { CreatePost } from './application/usecases/posts/CreatePost'
+import { DeactivePost } from './application/usecases/posts/DeactivePost'
+import { FindPosts } from './application/usecases/posts/FindPosts'
+import { FindPostsByUser } from './application/usecases/posts/FindPostsByUser'
+import { FindPublicPosts } from './application/usecases/posts/FindPublicPosts'
+import { RemovePost } from './application/usecases/posts/RemovePost'
 import { Bcrypt } from './infra/adapters/Bcrypt'
 import { Ejs } from './infra/adapters/Ejs'
 import { JSONWebToken } from './infra/adapters/JSONWebToken'
 import { Nodemailer } from './infra/adapters/Nodemailer'
 import { Pagination } from './infra/adapters/Pagination'
+import { Validator } from './infra/adapters/Validator'
 import { AuthenticateUserController } from './infra/controllers/accounts/AuthenticateUserController'
 import { CreateUserController } from './infra/controllers/accounts/CreateUserController'
 import { ForgotPasswordContoller } from './infra/controllers/accounts/ForgotPasswordContoller'
@@ -53,22 +55,23 @@ const sign = new JSONWebToken()
 const mail = new Nodemailer()
 const template = new Ejs()
 const pagination = new Pagination()
+const validator = new Validator()
 
 // usecases
-const createUser = new CreateUser(userRepository, hash)
+const createUser = new CreateUser(userRepository, hash, validator)
 const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mail, template)
-const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
+const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
 const getUserGitHub = new GetUserGitHub(gitHubGateway)
-const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
+const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
 const authenticateUserGitHub = new AuthenticateUserGitHub(gitHubGateway)
 const revokeToken = new RevokeToken(tokenRepository, sign)
-const createPost = new CreatePost(postRepository, userRepository)
+const createPost = new CreatePost(postRepository, userRepository, validator)
 const findPosts = new FindPosts(postRepository, userRepository, sign, pagination)
-const findPostsByUser = new FindPostsByUser(postRepository, userRepository, sign)
-const findPublicPosts= new FindPublicPosts(postRepository, userRepository, sign, pagination)
-const activePost = new ActivePost(postRepository, userRepository, tokenRepository, sign)
-const deactivePost = new DeactivePost(postRepository, userRepository, tokenRepository, sign)
-const removePost = new RemovePost(postRepository, userRepository, tokenRepository, sign)
+const findPostsByUser = new FindPostsByUser(postRepository, userRepository, sign, validator)
+const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign, pagination)
+const activePost = new ActivePost(postRepository, userRepository, sign, validator)
+const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
+const removePost = new RemovePost(postRepository, userRepository, sign, validator)
 
 // controllers
 const createUserController = new CreateUserController(createUser)
@@ -105,7 +108,7 @@ new AuthRoute(
 ).init()
 
 new PostRoute(
-    app, 
+    app,
     createPostController,
     findPostsController,
     findPostsByUserController,
@@ -124,7 +127,14 @@ app.use((req: Request, res: Response, next: NextFunction) => {
     next()
 })
 
-app.use((err: CustomError, req: Request, res: Response, next: NextFunction) => {
+app.use((
+    err: Error
+        & CustomError
+        & MissingParamError,
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     const status = err.status || 500
     const message = err.message || 'internal server error'
     res.status(status).json({

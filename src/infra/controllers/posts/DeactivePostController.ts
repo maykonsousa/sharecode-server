@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { DeactivePost } from '../../../application/usecases/posts/DeactivePost/DeactivePost'
+import { DeactivePost } from '../../../application/usecases/posts/DeactivePost'
 
 export class DeactivePostController {
     constructor(

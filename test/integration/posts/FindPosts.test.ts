@@ -1,11 +1,9 @@
 import { randomBytes } from 'crypto'
-import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser/AuthenticateUser'
-import { CreateSuperUser } from '../../../src/application/usecases/accounts/CreateSuperUser/CreateSuperUser'
-import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser/CreateUser'
-import { CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser/CreateUserInput'
-import { CreatePost } from '../../../src/application/usecases/posts/CreatePost/CreatePost'
-import { CreatePostInput } from '../../../src/application/usecases/posts/CreatePost/CreatePostOutput'
-import { FindPosts } from '../../../src/application/usecases/posts/FindPosts/FindPosts'
+import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser'
+import { CreateSuperUser } from '../../../src/application/usecases/accounts/CreateSuperUser'
+import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
+import { CreatePost } from '../../../src/application/usecases/posts/CreatePost'
+import { FindPosts } from '../../../src/application/usecases/posts/FindPosts'
 import { PostRepository } from '../../../src/domain/repositories/PostRepository'
 import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
@@ -14,6 +12,7 @@ import { Hash } from '../../../src/infra/adapters/Hash'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Pagination } from '../../../src/infra/adapters/Pagination'
 import { Sign } from '../../../src/infra/adapters/Sign'
+import { Validator } from '../../../src/infra/adapters/Validator'
 import { PostRepositoryMemory } from '../../../src/infra/repositories/memory/PostRepositoryMemory'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
@@ -23,8 +22,9 @@ let userRepository: UserRepository
 let tokenRepository: TokenRepository
 let hash: Hash
 let sign: Sign
-let inputUser: CreateUserInput
-let inputPost: CreatePostInput
+let validator: Validator
+let inputUser = null
+let inputPost = null
 let pagination: Pagination
 
 beforeEach(async () => {
@@ -34,6 +34,7 @@ beforeEach(async () => {
     hash = new Bcrypt()
     sign = new JSONWebToken()
     pagination = new Pagination()
+    validator = new Validator()
     const random = randomBytes(16).toString('hex')
     inputUser = {
         gh_username: random,
@@ -52,11 +53,11 @@ beforeEach(async () => {
 })
 
 test('Should find all posts', async () => {
-    const createSuperUser = new CreateSuperUser(userRepository, hash)
+    const createSuperUser = new CreateSuperUser(userRepository, hash, validator)
     await createSuperUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
-    const createPost = new CreatePost(postRepository, userRepository)
+    const createPost = new CreatePost(postRepository, userRepository, validator)
     const [user] = await userRepository.findAll()
     inputPost.user_id = user.id
     await createPost.execute(inputPost)
@@ -68,11 +69,11 @@ test('Should find all posts', async () => {
 })
 
 test('Not should find all posts with not allowed user', async () => {
-    const createUser = new CreateUser(userRepository, hash)
+    const createUser = new CreateUser(userRepository, hash, validator)
     await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
-    const createPost = new CreatePost(postRepository, userRepository)
+    const createPost = new CreatePost(postRepository, userRepository, validator)
     const [user] = await userRepository.findAll()
     inputPost.user_id = user.id
     await createPost.execute(inputPost)

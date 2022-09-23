@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { FindPublicPosts } from '../../../application/usecases/posts/FindPublicPosts/FindPublicPosts'
+import { FindPublicPosts } from '../../../application/usecases/posts/FindPublicPosts'
 
 export class FindPublicPostsController {
     constructor(

@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { CreatePost } from '../../../application/usecases/posts/CreatePost/CreatePost'
+import { CreatePost } from '../../../application/usecases/posts/CreatePost'
 
 export class CreatePostController {
     constructor(

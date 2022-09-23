@@ -1,12 +1,10 @@
 import { randomBytes } from 'crypto'
 import 'dotenv/config'
-import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser/AuthenticateUser'
-import { CreateSuperUser } from '../../../src/application/usecases/accounts/CreateSuperUser/CreateSuperUser'
-import { CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser/CreateUserInput'
-import { ActivePost } from '../../../src/application/usecases/posts/ActivePost/ActivePost'
-import { CreatePost } from '../../../src/application/usecases/posts/CreatePost/CreatePost'
-import { CreatePostInput } from '../../../src/application/usecases/posts/CreatePost/CreatePostOutput'
-import { DeactivePost } from '../../../src/application/usecases/posts/DeactivePost/DeactivePost'
+import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser'
+import { CreateSuperUser } from '../../../src/application/usecases/accounts/CreateSuperUser'
+import { ActivePost } from '../../../src/application/usecases/posts/ActivePost'
+import { CreatePost } from '../../../src/application/usecases/posts/CreatePost'
+import { DeactivePost } from '../../../src/application/usecases/posts/DeactivePost'
 import { PostRepository } from '../../../src/domain/repositories/PostRepository'
 import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
@@ -14,6 +12,7 @@ import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Hash } from '../../../src/infra/adapters/Hash'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Sign } from '../../../src/infra/adapters/Sign'
+import { Validator } from '../../../src/infra/adapters/Validator'
 import { PostRepositoryMemory } from '../../../src/infra/repositories/memory/PostRepositoryMemory'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
@@ -23,8 +22,9 @@ let userRepository: UserRepository
 let tokenRepository: TokenRepository
 let hash: Hash
 let sign: Sign
-let inputUser: CreateUserInput
-let inputPost: CreatePostInput
+let validator: Validator
+let inputUser = null
+let inputPost = null
 
 beforeEach(async () => {
     postRepository = new PostRepositoryMemory()
@@ -32,6 +32,7 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     sign = new JSONWebToken()
+    validator = new Validator()
     const random = randomBytes(16).toString('hex')
     inputUser = {
         gh_username: random,
@@ -50,21 +51,21 @@ beforeEach(async () => {
 })
 
 test('Should active post', async () => {
-    const createSuperUser = new CreateSuperUser(userRepository, hash)
+    const createSuperUser = new CreateSuperUser(userRepository, hash, validator)
     await createSuperUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
-    const createPost = new CreatePost(postRepository, userRepository)
+    const createPost = new CreatePost(postRepository, userRepository, validator)
     const [user] = await userRepository.findAll()
     inputPost.user_id = user.id
     await createPost.execute(inputPost)
-    const deactivePost = new DeactivePost(postRepository, userRepository, tokenRepository, sign)
+    const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
     const [post] = await postRepository.findAll()
     await deactivePost.execute({
         id: post.id,
         token: outputAuthenticateUser.token
     })
-    const activePost = new ActivePost(postRepository, userRepository, tokenRepository, sign)
+    const activePost = new ActivePost(postRepository, userRepository, sign, validator)
     await activePost.execute({
         id: post.id,
         token: outputAuthenticateUser.token
