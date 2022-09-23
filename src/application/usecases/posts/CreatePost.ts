@@ -3,7 +3,6 @@ import { Post } from '../../../domain/entities/Post'
 import { PostRepository } from '../../../domain/repositories/PostRepository'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Validator } from '../../../infra/adapters/Validator'
-import { CustomError } from '../../exceptions/CustomError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class CreatePost {
