@@ -3,6 +3,7 @@ import { TokenRepository } from '../../../domain/repositories/TokenRepository'
 import { Sign } from '../../../infra/adapters/Sign'
 import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'
+import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class RevokeToken {
     constructor(
@@ -13,7 +14,7 @@ export class RevokeToken {
     async execute(id: string): Promise<RevokeTokenOutput> {
         if (!id) throw new MissingParamError('id is required')
         const existsToken = await this.tokenRepository.find(id)
-        if (!existsToken) throw new CustomError(404, 'token not found')
+        if (!existsToken) throw new NotFoundError('token not found')
         if (existsToken.isRevoked) throw new CustomError(422, 'token already revoked')
         const encryptedToken = this.sign.encode({
             id: existsToken.userId,

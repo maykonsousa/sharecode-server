@@ -5,6 +5,7 @@ import { Hash } from '../../../infra/adapters/Hash'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
+import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class ResetPassword {
     private readonly fieldsRequired: string[]
@@ -25,7 +26,7 @@ export class ResetPassword {
     async execute(input: ResetPasswordInput): Promise<void> {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsToken = await this.tokenRepository.find(input.token)
-        if (!existsToken) throw new CustomError(404, 'token not found')
+        if (!existsToken) throw new NotFoundError('token not found')
         if (existsToken.type !== 'forgot_password') throw new CustomError(403, 'not allowed')
         try {
             this.sign.decode(existsToken.token)
@@ -33,7 +34,7 @@ export class ResetPassword {
             throw new CustomError(401, 'token is invalid or expired')
         }
         const existsUser = await this.userRepository.find(existsToken.userId)
-        if (!existsUser) throw new CustomError(404, 'user not found')
+        if (!existsUser) throw new NotFoundError('user not found')
         const isPasswordMath = this.hash.decrypt(input.password, existsUser.password.getValue())
         if (isPasswordMath) throw new CustomError(400, 'password should be diff to old password')
         const user = new User(

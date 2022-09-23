@@ -4,6 +4,7 @@ import { PostRepository } from '../../../domain/repositories/PostRepository'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
+import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class CreatePost {
     private readonly fieldsRequired: string[]
@@ -24,7 +25,7 @@ export class CreatePost {
     async execute(input: CreatePostInput): Promise<void> {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsUser = await this.userRepository.find(input.user_id)
-        if (!existsUser) throw new CustomError(404, 'user not found')
+        if (!existsUser) throw new NotFoundError('user not found')
         const IS_ACTIVE = existsUser.type !== 'user' || false
         const IS_PRIVATE = false
         const post = new Post(

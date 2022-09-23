@@ -4,6 +4,7 @@ import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
+import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class DeactivePost {
     private readonly fieldsRequired: string[]
@@ -23,7 +24,7 @@ export class DeactivePost {
     async execute(input: DeactivePostInput): Promise<void> {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsPost = await this.postRepository.find(input.id)
-        if (!existsPost) throw new CustomError(404, 'post not found')
+        if (!existsPost) throw new NotFoundError('post not found')
         if (!existsPost.is_active) throw new CustomError(422, 'post already deactivated')
         let id = null
         try {
@@ -32,7 +33,7 @@ export class DeactivePost {
             throw new CustomError(401, 'invalid token')
         }
         const existsUser = await this.userRepository.find(id)
-        if (!existsUser) throw new CustomError(404, 'user not found')
+        if (!existsUser) throw new NotFoundError('user not found')
         if (existsUser.type === 'user') throw new CustomError(403, 'not allowed')
         const IS_ACTIVE = false
         const post = new Post(

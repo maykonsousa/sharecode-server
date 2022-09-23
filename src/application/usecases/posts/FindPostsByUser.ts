@@ -4,6 +4,7 @@ import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
+import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class FindPostsByUser {
     private readonly fieldsRequired: string[]
@@ -29,7 +30,7 @@ export class FindPostsByUser {
             throw new CustomError(401, 'invalid token')
         }
         const existsUser = await this.userRepository.find(input.id)
-        if (!existsUser) throw new CustomError(404, 'user not found')
+        if (!existsUser) throw new NotFoundError('user not found')
         if (existsUser.id !== id) throw new CustomError(403, 'not allowed')
         const posts = await this.postRepository.findByUser(existsUser.id)
         const output: FindPostsByUserOutput[] = []
