@@ -2,9 +2,9 @@ import { PostRepository } from '../../../domain/repositories/PostRepository'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Pagination } from '../../../infra/adapters/Pagination'
 import { Sign } from '../../../infra/adapters/Sign'
-import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
+import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class FindPublicPosts {
     constructor(
@@ -20,7 +20,7 @@ export class FindPublicPosts {
         try {
             id = this.sign.decode(input.token).id
         } catch (err) {
-            throw new CustomError(401, 'invalid token')
+            throw new UnauthorizedError('invalid token')
         }
         const existsUser = await this.userRepository.find(id)
         if (!existsUser) throw new NotFoundError('user not found')

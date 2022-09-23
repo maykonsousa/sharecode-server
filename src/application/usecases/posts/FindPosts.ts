@@ -6,6 +6,7 @@ import { Sign } from '../../../infra/adapters/Sign'
 import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
+import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class FindPosts {
     constructor(
@@ -21,7 +22,7 @@ export class FindPosts {
         try {
             id = this.sign.decode(input.token).id
         } catch (err) {
-            throw new CustomError(401, 'invalid token')
+            throw new UnauthorizedError('invalid token')
         }
         const existsUser = await this.userRepository.find(id)
         if (!existsUser) throw new NotFoundError('user not found')

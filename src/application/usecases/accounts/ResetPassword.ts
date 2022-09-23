@@ -6,6 +6,7 @@ import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
+import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class ResetPassword {
     private readonly fieldsRequired: string[]
@@ -31,7 +32,7 @@ export class ResetPassword {
         try {
             this.sign.decode(existsToken.token)
         } catch (error) {
-            throw new CustomError(401, 'token is invalid or expired')
+            throw new UnauthorizedError('token is invalid or expired')
         }
         const existsUser = await this.userRepository.find(existsToken.userId)
         if (!existsUser) throw new NotFoundError('user not found')

@@ -6,7 +6,7 @@ import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Hash } from '../../../infra/adapters/Hash'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
-import { CustomError } from '../../exceptions/CustomError'
+import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class AuthenticateUser {
     private readonly fieldsRequired: string[]
@@ -27,9 +27,9 @@ export class AuthenticateUser {
     async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsUser = await this.userRepository.findByEmail(input.email)
-        if (!existsUser) throw new CustomError(401, 'invalid login')
+        if (!existsUser) throw new UnauthorizedError('invalid login')
         const isPasswordMath = this.hash.decrypt(input.password,existsUser.password.getValue())
-        if (!isPasswordMath) throw new CustomError(401, 'invalid login')
+        if (!isPasswordMath) throw new UnauthorizedError('invalid login')
         const encodedToken = this.sign.encode({
             id: existsUser.id,
             type: existsUser.type

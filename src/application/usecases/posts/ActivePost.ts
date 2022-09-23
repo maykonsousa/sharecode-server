@@ -5,6 +5,7 @@ import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
+import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class ActivePost {
     private readonly fieldsRequired: string[]
@@ -30,7 +31,7 @@ export class ActivePost {
         try {
             id = this.sign.decode(input.token).id
         } catch (err) {
-            throw new CustomError(401, 'invalid token')
+            throw new UnauthorizedError('invalid token')
         }
         const existsToken = await this.userRepository.find(id)
         if (!existsToken) throw new NotFoundError('user not found')
