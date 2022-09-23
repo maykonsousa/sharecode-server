@@ -1,6 +1,7 @@
 import express, { NextFunction, Request, Response } from 'express'
 import { CustomError } from './application/exceptions/CustomError'
 import { MissingParamError } from './application/exceptions/MissingParamError'
+import { NotFoundError } from './application/exceptions/NotFoundError'
 import { AuthenticateUser } from './application/usecases/accounts/AuthenticateUser'
 import { AuthenticateUserGitHub } from './application/usecases/accounts/AuthenticateUserGitHub'
 import { CreateUser } from './application/usecases/accounts/CreateUser'
@@ -130,7 +131,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 app.use((
     err: Error
         & CustomError
-        & MissingParamError,
+        & MissingParamError
+        & NotFoundError,
     req: Request,
     res: Response,
     next: NextFunction
