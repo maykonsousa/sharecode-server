@@ -8,10 +8,10 @@ import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class FindPublicPosts {
     constructor(
-        private readonly postRepository: PostRepository,
-        private readonly userRepository: UserRepository,
-        private readonly sign: Sign,
-        private readonly pagination: Pagination
+        readonly postRepository: PostRepository,
+        readonly userRepository: UserRepository,
+        readonly sign: Sign,
+        readonly pagination: Pagination
     ) { }
 
     async execute(input: FindPublicPostsInput): Promise<FindPublicPostsOutput[]> {

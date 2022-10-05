@@ -4,7 +4,7 @@ import { RevokeToken } from '../../../application/usecases/accounts/RevokeToken'
 
 export class RevokeTokenController {
     constructor(
-        private readonly revokeToken: RevokeToken
+        readonly revokeToken: RevokeToken
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

@@ -7,8 +7,8 @@ import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class RevokeToken {
     constructor(
-        private readonly tokenRepository: TokenRepository,
-        private readonly sign: Sign
+        readonly tokenRepository: TokenRepository,
+        readonly sign: Sign
     ) { }
 
     async execute(id: string): Promise<RevokeTokenOutput> {

@@ -6,12 +6,12 @@ import { Validator } from '../../../infra/adapters/Validator'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class CreatePost {
-    private readonly fieldsRequired: string[]
+    readonly fieldsRequired: string[]
 
     constructor(
-        private readonly postRepository: PostRepository,
-        private readonly userRepository: UserRepository,
-        private readonly validator: Validator
+        readonly postRepository: PostRepository,
+        readonly userRepository: UserRepository,
+        readonly validator: Validator
     ) { 
         this.fieldsRequired = [
             'title',

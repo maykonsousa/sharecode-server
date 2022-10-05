@@ -6,12 +6,12 @@ import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
 
 export class CreateUser {
-    private readonly fieldsRequired: string[]
+    readonly fieldsRequired: string[]
 
     constructor(
-        private readonly userRepository: UserRepository,
-        private readonly hash: Hash,
-        private readonly validator: Validator
+        readonly userRepository: UserRepository,
+        readonly hash: Hash,
+        readonly validator: Validator
     ) { 
         this.fieldsRequired = [
             'gh_username',

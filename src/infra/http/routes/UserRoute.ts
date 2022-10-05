@@ -8,11 +8,11 @@ export class UserRoute {
     private router: Router
 
     constructor(
-        private readonly app: Express,
-        private readonly createUserController: CreateUserController,
-        private readonly authenticateUserGitHubController: AuthenticateUserGitHubController,
-        private readonly forgotPasswordController: ForgotPasswordContoller,
-        private readonly resetPasswordController: ResetPasswordController
+        readonly app: Express,
+        readonly createUserController: CreateUserController,
+        readonly authenticateUserGitHubController: AuthenticateUserGitHubController,
+        readonly forgotPasswordController: ForgotPasswordContoller,
+        readonly resetPasswordController: ResetPasswordController
     ) {
         this.router = Router()
         this.app.use('/v1', this.router)

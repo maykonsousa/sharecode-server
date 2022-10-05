@@ -3,7 +3,7 @@ import { ForgotPassword } from '../../../application/usecases/accounts/ForgotPas
 
 export class ForgotPasswordContoller {
     constructor(
-        private readonly forgotPassword: ForgotPassword
+        readonly forgotPassword: ForgotPassword
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

@@ -3,7 +3,7 @@ import { RemovePost } from '../../../application/usecases/posts/RemovePost'
 
 export class RemovePostController {
     constructor(
-        private readonly removePost: RemovePost
+        readonly removePost: RemovePost
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

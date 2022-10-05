@@ -3,7 +3,7 @@ import { FindPosts } from '../../../application/usecases/posts/FindPosts'
 
 export class FindPostsController {
     constructor(
-        private readonly findPosts: FindPosts
+        readonly findPosts: FindPosts
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

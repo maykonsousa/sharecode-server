@@ -11,15 +11,15 @@ export class PostRoute {
     private router: Router
 
     constructor(
-        private readonly app: Express,
-        private readonly createPostController: CreatePostController,
-        private readonly findPostsController: FindPostsController,
-        private readonly findPostsByUserController: FindPostsByUserController,
-        private readonly findPublicPostsController: FindPublicPostsController,
-        private readonly activePostController: ActivePostController,
-        private readonly deactivePostController: DeactivePostController,
-        private readonly removePostController: RemovePostController,
-        private readonly middleware?: any,
+        readonly app: Express,
+        readonly createPostController: CreatePostController,
+        readonly findPostsController: FindPostsController,
+        readonly findPostsByUserController: FindPostsByUserController,
+        readonly findPublicPostsController: FindPublicPostsController,
+        readonly activePostController: ActivePostController,
+        readonly deactivePostController: DeactivePostController,
+        readonly removePostController: RemovePostController,
+        readonly middleware?: any,
     ) {
         this.router = Router()
         this.app.use('/v1', this.router)

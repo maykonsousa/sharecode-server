@@ -4,11 +4,11 @@ import { Validator } from '../../../infra/adapters/Validator'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class SetUserType {
-    private readonly fieldsRequired: string[]
+    readonly fieldsRequired: string[]
 
     constructor(
-        private readonly userRepository: UserRepository,
-        private readonly validator: Validator
+        readonly userRepository: UserRepository,
+        readonly validator: Validator
     ) { 
         this.fieldsRequired = [
             'id',

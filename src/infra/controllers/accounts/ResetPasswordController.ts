@@ -4,7 +4,7 @@ import { ResetPassword } from '../../../application/usecases/accounts/ResetPassw
 
 export class ResetPasswordController {
     constructor(
-        private readonly resetPassword: ResetPassword
+        readonly resetPassword: ResetPassword
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

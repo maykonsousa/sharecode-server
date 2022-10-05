@@ -3,7 +3,7 @@ import { CreatePost } from '../../../application/usecases/posts/CreatePost'
 
 export class CreatePostController {
     constructor(
-        private readonly createPost: CreatePost
+        readonly createPost: CreatePost
     ) {}
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

@@ -3,7 +3,7 @@ import { ActivePost } from '../../../application/usecases/posts/ActivePost'
 
 export class ActivePostController {
     constructor(
-        private readonly activePost: ActivePost
+        readonly activePost: ActivePost
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

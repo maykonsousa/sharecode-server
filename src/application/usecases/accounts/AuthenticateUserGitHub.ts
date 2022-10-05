@@ -3,7 +3,7 @@ import { MissingParamError } from '../../exceptions/MissingParamError'
 
 export class AuthenticateUserGitHub {
     constructor (
-        private readonly gitHubGateway: GitHubGateway
+        readonly gitHubGateway: GitHubGateway
     ) { }
 
     async execute(code: string): Promise<string> {

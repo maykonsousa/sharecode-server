@@ -3,7 +3,7 @@ import { DeactivePost } from '../../../application/usecases/posts/DeactivePost'
 
 export class DeactivePostController {
     constructor(
-        private readonly deactivePost: DeactivePost
+        readonly deactivePost: DeactivePost
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

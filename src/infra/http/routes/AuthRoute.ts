@@ -6,9 +6,9 @@ export class AuthRoute {
     private router: Router
 
     constructor(
-        private readonly app: Express,
-        private readonly authenticateUserController: AuthenticateUserController,
-        private readonly revokeTokenController: RevokeTokenController
+        readonly app: Express,
+        readonly authenticateUserController: AuthenticateUserController,
+        readonly revokeTokenController: RevokeTokenController
     ) {
         this.router = Router()
         this.app.use('/v1', this.router)

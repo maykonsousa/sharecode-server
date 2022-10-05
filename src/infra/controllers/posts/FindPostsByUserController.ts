@@ -3,7 +3,7 @@ import { FindPostsByUser } from '../../../application/usecases/posts/FindPostsBy
 
 export class FindPostsByUserController {
     constructor (
-        private readonly findPostsByUser: FindPostsByUser
+        readonly findPostsByUser: FindPostsByUser
     ) { }
     
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

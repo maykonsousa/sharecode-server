@@ -3,7 +3,7 @@ import { FindPublicPosts } from '../../../application/usecases/posts/FindPublicP
 
 export class FindPublicPostsController {
     constructor(
-        private readonly findPublicPosts: FindPublicPosts
+        readonly findPublicPosts: FindPublicPosts
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

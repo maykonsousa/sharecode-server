@@ -4,8 +4,8 @@ import { GetUserGitHub } from '../../../application/usecases/accounts/GetUserGit
 
 export class AuthenticateUserGitHubController {
     constructor(
-        private readonly getUserGitHub: GetUserGitHub,
-        private readonly authenticateUserGitHub: AuthenticateUserGitHub
+        readonly getUserGitHub: GetUserGitHub,
+        readonly authenticateUserGitHub: AuthenticateUserGitHub
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {

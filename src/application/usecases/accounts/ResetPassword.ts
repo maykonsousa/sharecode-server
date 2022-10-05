@@ -9,14 +9,14 @@ import { NotFoundError } from '../../exceptions/NotFoundError'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class ResetPassword {
-    private readonly fieldsRequired: string[]
+    readonly fieldsRequired: string[]
 
     constructor(
-        private readonly userRepository: UserRepository,
-        private readonly tokenRepository: TokenRepository,
-        private readonly hash: Hash,
-        private readonly sign: Sign,
-        private readonly validator: Validator
+        readonly userRepository: UserRepository,
+        readonly tokenRepository: TokenRepository,
+        readonly hash: Hash,
+        readonly sign: Sign,
+        readonly validator: Validator
     ) { 
         this.fieldsRequired = [
             'token',

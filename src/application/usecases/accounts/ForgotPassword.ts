@@ -11,11 +11,11 @@ import { MissingParamError } from '../../exceptions/MissingParamError'
 
 export class ForgotPassword {
     constructor(
-        private readonly userRepository: UserRepository,
-        private readonly tokenRepository: TokenRepository,
-        private readonly sign: Sign,
-        private readonly mail: Mail,
-        private readonly template: Template
+        readonly userRepository: UserRepository,
+        readonly tokenRepository: TokenRepository,
+        readonly sign: Sign,
+        readonly mail: Mail,
+        readonly template: Template
     ) { }
 
     async execute(email: string): Promise<ForgotPasswordOutput> {

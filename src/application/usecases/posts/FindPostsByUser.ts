@@ -8,13 +8,13 @@ import { NotFoundError } from '../../exceptions/NotFoundError'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class FindPostsByUser {
-    private readonly fieldsRequired: string[]
+    readonly fieldsRequired: string[]
 
     constructor(
-        private readonly postRepository: PostRepository,
-        private readonly userRepository: UserRepository,
-        private readonly sign: Sign,
-        private readonly validator: Validator
+        readonly postRepository: PostRepository,
+        readonly userRepository: UserRepository,
+        readonly sign: Sign,
+        readonly validator: Validator
     ) { 
         this.fieldsRequired = [
             'id',

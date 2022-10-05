@@ -3,7 +3,7 @@ import { AuthenticateUser } from '../../../application/usecases/accounts/Authent
 
 export class AuthenticateUserController {
     constructor(
-        private readonly authenticateUser: AuthenticateUser
+        readonly authenticateUser: AuthenticateUser
     ) { }
 
     async handle(req: Request, res: Response, next: NextFunction): Promise<Response> {
