@@ -36,6 +36,7 @@ import { FindPostsByUserController } from './infra/controllers/posts/FindPostsBy
 import { FindPostsController } from './infra/controllers/posts/FindPostsController'
 import { FindPublicPostsController } from './infra/controllers/posts/FindPublicPostsController'
 import { RemovePostController } from './infra/controllers/posts/RemovePostController'
+import { PrismaDBAdapter } from './infra/database/PrismaDBAdapter'
 import { GitHubGateway } from './infra/gateways/GitHubGateway'
 import AuthMiddleware from './infra/http/middlewares/AuthMiddleware'
 import { AuthRoute } from './infra/http/routes/AuthRoute'
@@ -45,12 +46,6 @@ import { PostRepositoryPrisma } from './infra/repositories/database/PostReposito
 import { TokenRepositoryPrisma } from './infra/repositories/database/TokenRepositoryPrisma'
 import { UserRepositoryPrisma } from './infra/repositories/database/UserRepositoryPrisma'
 
-// repositories
-const userRepository = new UserRepositoryPrisma()
-const tokenRepository = new TokenRepositoryPrisma()
-const postRepository = new PostRepositoryPrisma()
-const gitHubGateway = new GitHubGateway()
-
 // adapters
 const hash = new Bcrypt()
 const sign = new JSONWebToken()
@@ -58,6 +53,14 @@ const mail = new Nodemailer()
 const template = new Ejs()
 const pagination = new Pagination()
 const validator = new Validator()
+const prisma = new PrismaDBAdapter()
+prisma.connect()
+
+// repositories
+const userRepository = new UserRepositoryPrisma(prisma)
+const tokenRepository = new TokenRepositoryPrisma(prisma)
+const postRepository = new PostRepositoryPrisma(prisma)
+const gitHubGateway = new GitHubGateway()
 
 // usecases
 const createUser = new CreateUser(userRepository, hash, validator)

@@ -1,9 +1,14 @@
 import { User } from '../../../domain/entities/User'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
-import { prismaClient } from '../../database/prisma/client'
+import { PrismaDBAdapter } from '../../database/PrismaDBAdapter'
 
 export class UserRepositoryPrisma implements UserRepository {
+    constructor(
+        readonly prismaClient: PrismaDBAdapter
+    ) { }
+    
     async save(user: User): Promise<void> {
+        const connection = this.prismaClient.getConnection()
         const data = {
             id: user.id,
             gh_username: user.gh_username,
@@ -12,11 +17,12 @@ export class UserRepositoryPrisma implements UserRepository {
             password: user.password.getValue(),
             type: user.type
         }
-        await prismaClient.user.create({ data })
+        await connection.user.create({ data })
     }
 
     async findAll(): Promise<User[]> {
-        const usersData = await prismaClient.user.findMany()
+        const connection = this.prismaClient.getConnection()
+        const usersData = await connection.user.findMany()
         const users: User[] = []
         for (const userData of usersData) {
             users.push(
@@ -34,7 +40,8 @@ export class UserRepositoryPrisma implements UserRepository {
     }
 
     async find(id: string): Promise<User> {
-        const userData = await prismaClient.user.findFirst({
+        const connection = this.prismaClient.getConnection()
+        const userData = await connection.user.findFirst({
             where: { id }
         })
         if (!userData) return undefined
@@ -49,7 +56,8 @@ export class UserRepositoryPrisma implements UserRepository {
     }
 
     async findByEmail(email: string): Promise<User> {
-        const userData = await prismaClient.user.findFirst({
+        const connection = this.prismaClient.getConnection()
+        const userData = await connection.user.findFirst({
             where: { email },
         })
         if (!userData) return undefined
@@ -64,6 +72,7 @@ export class UserRepositoryPrisma implements UserRepository {
     }
 
     async update(user: User): Promise<void> {
+        const connection = this.prismaClient.getConnection()
         const data = {
             gh_username: user.gh_username,
             name: user.name,
@@ -71,7 +80,7 @@ export class UserRepositoryPrisma implements UserRepository {
             password: user.password.getValue(),
             type: user.type
         }
-        await prismaClient.user.update({
+        await connection.user.update({
             where: {
                 id: user.id,
             }, 
@@ -80,10 +89,12 @@ export class UserRepositoryPrisma implements UserRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.user.delete({ where: { id } })
+        const connection = this.prismaClient.getConnection()
+        await connection.user.delete({ where: { id } })
     }
 
     async clean(): Promise<void> {
-        await prismaClient.user.deleteMany()
+        const connection = this.prismaClient.getConnection()
+        await connection.user.deleteMany()
     }
 }

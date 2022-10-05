@@ -1,9 +1,14 @@
 import { Token } from '../../../domain/entities/Token'
 import { TokenRepository } from '../../../domain/repositories/TokenRepository'
-import { prismaClient } from '../../database/prisma/client'
+import { PrismaDBAdapter } from '../../database/PrismaDBAdapter'
 
 export class TokenRepositoryPrisma implements TokenRepository {
+    constructor(
+        readonly prismaClient: PrismaDBAdapter
+    ) { }
+    
     async save(token: Token): Promise<void> {
+        const connection = this.prismaClient.getConnection()
         const data = {
             id: token.id,
             token: token.token,
@@ -12,11 +17,12 @@ export class TokenRepositoryPrisma implements TokenRepository {
             is_revoked: token.isRevoked,
             expires_at: token.expiresAt
         }
-        await prismaClient.token.create({ data })
+        await connection.token.create({ data })
     }
 
     async find(id: string): Promise<Token> {
-        const tokenData = await prismaClient.token.findFirst({
+        const connection = this.prismaClient.getConnection()
+        const tokenData = await connection.token.findFirst({
             where: {
                 id
             }
@@ -33,7 +39,8 @@ export class TokenRepositoryPrisma implements TokenRepository {
     }
 
     async findAll(): Promise<Token[]> {
-        const tokensData = await prismaClient.token.findMany()
+        const connection = this.prismaClient.getConnection()
+        const tokensData = await connection.token.findMany()
         const tokens: Token[] = []
         for (const tokenData of tokensData) {
             tokens.push(
@@ -51,6 +58,7 @@ export class TokenRepositoryPrisma implements TokenRepository {
     }
 
     async upload(token: Token): Promise<void> {
+        const connection = this.prismaClient.getConnection()
         const data = {
             id: token.id,
             token: token.token,
@@ -59,7 +67,7 @@ export class TokenRepositoryPrisma implements TokenRepository {
             is_revoked: token.isRevoked,
             expires_at: token.expiresAt
         }
-        await prismaClient.token.update({
+        await connection.token.update({
             where: {
                 id: token.id
             },
@@ -68,7 +76,8 @@ export class TokenRepositoryPrisma implements TokenRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.token.delete({
+        const connection = this.prismaClient.getConnection()
+        await connection.token.delete({
             where: {
                 id
             }

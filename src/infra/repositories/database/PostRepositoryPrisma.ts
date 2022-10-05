@@ -1,9 +1,14 @@
 import { Post } from '../../../domain/entities/Post'
 import { PostRepository } from '../../../domain/repositories/PostRepository'
-import { prismaClient } from '../../database/prisma/client'
+import { PrismaDBAdapter } from '../../database/PrismaDBAdapter'
 
 export class PostRepositoryPrisma implements PostRepository {
+    constructor(
+        readonly prismaClient: PrismaDBAdapter
+    ) { }
+
     async save(post: Post): Promise<void> {
+        const connection = this.prismaClient.getConnection()
         const data = {
             id: post.id,
             user_id: post.user_id,
@@ -13,10 +18,11 @@ export class PostRepositoryPrisma implements PostRepository {
             is_private: post.is_private,
             is_active: post.is_active,
         }
-        await prismaClient.posts.create({ data })
+        await connection.posts.create({ data })
     }
 
     async update(post: Post): Promise<void> {
+        const connection = this.prismaClient.getConnection()
         const data = {
             id: post.id,
             user_id: post.user_id,
@@ -26,7 +32,7 @@ export class PostRepositoryPrisma implements PostRepository {
             is_private: post.is_private,
             is_active: post.is_active,
         }
-        await prismaClient.posts.update({
+        connection.posts.update({
             where: {
                 id: post.id
             },
@@ -35,7 +41,8 @@ export class PostRepositoryPrisma implements PostRepository {
     }
 
     async findPublicPosts(): Promise<Post[]> {
-        const postsData = await prismaClient.posts.findMany({
+        const connection = this.prismaClient.getConnection()
+        const postsData = await connection.posts.findMany({
             where: {
                 is_private: false,
                 is_active: true
@@ -59,7 +66,8 @@ export class PostRepositoryPrisma implements PostRepository {
     }
 
     async find(id: string): Promise<Post> {
-        const postData = await prismaClient.posts.findFirst({
+        const connection = this.prismaClient.getConnection()
+        const postData = await connection.posts.findFirst({
             where: {
                 id
             }
@@ -76,7 +84,8 @@ export class PostRepositoryPrisma implements PostRepository {
         )
     }
     async findByURL(url: string): Promise<Post> {
-        const postData = await prismaClient.posts.findFirst({
+        const connection = this.prismaClient.getConnection()
+        const postData = await connection.posts.findFirst({
             where: {
                 video_id: url
             }
@@ -94,7 +103,8 @@ export class PostRepositoryPrisma implements PostRepository {
     }
 
     async findByUser(userId: string): Promise<Post[]> {
-        const postsData = await prismaClient.posts.findMany({
+        const connection = this.prismaClient.getConnection()
+        const postsData = await connection.posts.findMany({
             where: {
                 user_id: userId
             }
@@ -118,7 +128,8 @@ export class PostRepositoryPrisma implements PostRepository {
     }
 
     async findAll(): Promise<Post[]> {
-        const postsData = await prismaClient.posts.findMany()
+        const connection = this.prismaClient.getConnection()
+        const postsData = await connection.posts.findMany()
         const posts: Post[] = []
         for (const postData of postsData) {
             posts.push(
@@ -137,7 +148,8 @@ export class PostRepositoryPrisma implements PostRepository {
     }
 
     async delete(id: string): Promise<void> {
-        await prismaClient.posts.delete({
+        const connection = this.prismaClient.getConnection()
+        connection.posts.delete({
             where: {
                 id
             }
@@ -145,6 +157,7 @@ export class PostRepositoryPrisma implements PostRepository {
     }
 
     async clean(): Promise<void> {
-        await prismaClient.posts.deleteMany({})
+        const connection = this.prismaClient.getConnection()
+        connection.posts.deleteMany({})
     }
 }
