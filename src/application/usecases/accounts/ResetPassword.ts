@@ -53,7 +53,7 @@ export class ResetPassword {
     }
 }
 
-export type ResetPasswordInput = {
+type ResetPasswordInput = {
     token: string
     password: string
 }

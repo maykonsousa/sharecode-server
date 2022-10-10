@@ -7,19 +7,7 @@ beforeEach(() => {
     random = randomBytes(16).toString('hex')
 })
 
-test('Should create user with valid email', () => {
-    const user = new User(
-        random,
-        random,
-        random,
-        `${random}@test.com`,
-        random,
-        'user'
-    )
-    expect(user.gh_username).toBe(random)
-})
-
-test('Not should create user with invalid email', () => {
+test('Not should create user if invalid email', () => {
     expect(
         () =>
             new User(
@@ -33,7 +21,7 @@ test('Not should create user with invalid email', () => {
     ).toThrowError('invalid email')
 })
 
-test('Not should create user with invalid password', () => {
+test('Not should create user if invalid password', () => {
     expect(
         () =>
             new User(
@@ -45,4 +33,16 @@ test('Not should create user with invalid password', () => {
                 'user'
             )
     ).toThrowError('invalid password')
+})
+
+test('Should create user', () => {
+    const user = new User(
+        random,
+        random,
+        random,
+        `${random}@test.com`,
+        random,
+        'user'
+    )
+    expect(user.gh_username).toBe(random)
 })

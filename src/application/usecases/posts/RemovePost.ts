@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto'
 import { Post } from '../../../domain/entities/Post'
 import { PostRepository } from '../../../domain/repositories/PostRepository'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
@@ -37,7 +38,7 @@ export class RemovePost {
             await this.postRepository.delete(existsPost.id)
             return
         }
-        const ADMIN_USER_ID = '4aaa45f8-6035-4fc4-adf2-35ba1fa0bafd'
+        const ADMIN_USER_ID = process.env.ADMIN_USER_ID
         const IS_PRIVATE = true
         const IS_ACTIVE = false
         const post = new Post(

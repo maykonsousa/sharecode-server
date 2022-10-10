@@ -51,12 +51,12 @@ export class AuthenticateUser {
     }
 }
 
-export type AuthenticateUserInput = {
+type AuthenticateUserInput = {
     email: string
     password: string
 }
 
-export type AuthenticateUserOutput = {
+type AuthenticateUserOutput = {
     token: string,
     refreshToken: string
 }

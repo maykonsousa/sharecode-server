@@ -32,7 +32,7 @@ export class PostRepositoryPrisma implements PostRepository {
             is_private: post.is_private,
             is_active: post.is_active,
         }
-        connection.posts.update({
+        await connection.posts.update({
             where: {
                 id: post.id
             },

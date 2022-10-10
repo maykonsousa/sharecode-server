@@ -32,7 +32,7 @@ export class SetUserType {
     }
 }
 
-export type SetUserTypeInput = {
+type SetUserTypeInput = {
     id: string
     type: string
 }

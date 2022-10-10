@@ -19,7 +19,7 @@ export class PostRoute {
         readonly activePostController: ActivePostController,
         readonly deactivePostController: DeactivePostController,
         readonly removePostController: RemovePostController,
-        readonly middleware?: any,
+        readonly middleware?: any
     ) {
         this.router = Router()
         this.app.use('/v1', this.router)

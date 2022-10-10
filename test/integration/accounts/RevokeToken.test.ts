@@ -1,7 +1,8 @@
-import 'dotenv/config'
 import { randomBytes } from 'crypto'
+import 'dotenv/config'
 import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser'
 import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
+import { RevokeToken } from '../../../src/application/usecases/accounts/RevokeToken'
 import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
@@ -41,25 +42,33 @@ beforeEach(async () => {
     await userRepository.clean()
 })
 
-test('Not should authenticate user if invalid email', async () => {
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-    await expect(authenticateUser.execute(inputUser))
-        .rejects.toThrowError('invalid login')
+test('Not should revoke token if missing param', async () => {
+    const revokeToken = new RevokeToken(tokenRepository, sign)
+    await expect(revokeToken.execute('')).rejects.toThrowError('id is required')
 })
 
-test('Not should authenticate user if invalid email', async () => {
+test('Not should revoke token if token not found', async () => {
+    const revokeToken = new RevokeToken(tokenRepository, sign)
+    await expect(revokeToken.execute('1234')).rejects.toThrowError('token not found')
+})
+
+test('Not should revoke token if token not found', async () => {
     const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-    inputUser.password = '12345'
-    await expect(authenticateUser.execute(inputUser))
-        .rejects.toThrowError('invalid login')
+    const ouputAuthenticateUser = await authenticateUser.execute(inputUser)
+    const revokeToken = new RevokeToken(tokenRepository, sign)
+    await revokeToken.execute(ouputAuthenticateUser.refreshToken)
+    await expect(revokeToken.execute(ouputAuthenticateUser.refreshToken))
+        .rejects.toThrowError('token already revoked')
 })
 
-test('Should authenticate user', async () => {
+test('Should revoke token', async () => {
     const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-    const outputAuthenticateUser = await authenticateUser.execute(inputUser)
-    expect(sign.decode(outputAuthenticateUser.token)).toBeTruthy()
+    const ouputAuthenticateUser = await authenticateUser.execute(inputUser)
+    const revokeToken = new RevokeToken(tokenRepository, sign)
+    const outputRevokeToken = await revokeToken.execute(ouputAuthenticateUser.refreshToken)
+    expect(outputRevokeToken).toHaveProperty('token')
 })

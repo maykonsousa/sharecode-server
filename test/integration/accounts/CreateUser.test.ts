@@ -1,16 +1,21 @@
 import { randomBytes } from 'crypto'
-import { CreateSuperUser } from '../../../src/application/usecases/accounts/CreateSuperUser'
 import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
-import { Hash } from '../../../src/infra/adapters/Hash'
 import { Validator } from '../../../src/infra/adapters/Validator'
+import { Queue } from '../../../src/infra/queue/Queue'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
 let userRepository: UserRepository
-let hash: Hash
+let hash: Bcrypt
 let validator: Validator
-let inputUser = null
+let inputUser: any
+
+const mockedQueue: Queue = {
+    publish: jest.fn(),
+    connect: jest.fn(),
+    close: jest.fn()
+}
 
 beforeEach(async () => {
     userRepository = new UserRepositoryMemory()
@@ -26,56 +31,23 @@ beforeEach(async () => {
     await userRepository.clean()
 })
 
-test('Should create a user', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator)
+test('Not sould create user if user already exists', async () => {
+    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
     await createUser.execute(inputUser)
-    const [user] = await userRepository.findAll()
-    expect(user.type).toBe('user')
+    await expect(createUser.execute(inputUser))
+        .rejects.toThrowError('user already exists')
 })
 
-test('Should create a super user', async () => {
-    const createSuperUser = new CreateSuperUser(userRepository, hash, validator)
-    await createSuperUser.execute(inputUser)
-    const [user] =  await userRepository.findAll()
-    expect(user.type).toBe('admin')
-})
-
-test('not should create a user with already exists', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator)
-    await createUser.execute(inputUser)
-    await expect(createUser.execute(inputUser)).rejects.toThrowError(
-        'user already exists'
-    )
-})
-
-test('not should create a user with gh_username is required', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator)
-    inputUser.gh_username = ''
-    await expect(createUser.execute(inputUser)).rejects.toThrowError(
-        'gh_username is required'
-    )
-})
-
-test('not should create a user with name is required', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator)
+test('Not sould create user if missing param', async () => {
+    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
     inputUser.name = ''
-    await expect(createUser.execute(inputUser)).rejects.toThrowError(
-        'name is required'
-    )
+    await expect(createUser.execute(inputUser))
+        .rejects.toThrowError('name is required')
 })
 
-test('not should create a user with email is required', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator)
-    inputUser.email = ''
-    await expect(createUser.execute(inputUser)).rejects.toThrowError(
-        'email is required'
-    )
-})
-
-test('not should create a user with password is required', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator)
-    inputUser.password = ''
-    await expect(createUser.execute(inputUser)).rejects.toThrowError(
-        'password is required'
-    )
+test('Should create user', async () => {
+    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const outputCreateUser = await createUser.execute(inputUser)
+    const user = await userRepository.find(outputCreateUser.id)
+    expect(user.name).toBe(inputUser.name)
 })

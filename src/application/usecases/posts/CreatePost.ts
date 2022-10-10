@@ -21,7 +21,7 @@ export class CreatePost {
         ]
     }
 
-    async execute(input: CreatePostInput): Promise<void> {
+    async execute(input: CreatePostInput): Promise<CreatePostOutput> {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsUser = await this.userRepository.find(input.user_id)
         if (!existsUser) throw new NotFoundError('user not found')
@@ -37,13 +37,20 @@ export class CreatePost {
             IS_ACTIVE
         )
         await this.postRepository.save(post)
+        return {
+            id: post.id
+        }
     }
 }
 
-export type CreatePostInput = {
+type CreatePostInput = {
     user_id: string
     video_id: string
     title: string
     description: string
     is_private?: boolean
+}
+
+type CreatePostOutput = {
+    id: string
 }

@@ -35,6 +35,6 @@ export class RevokeToken {
     }
 }
 
-export type RevokeTokenOutput = {
+type RevokeTokenOutput = {
     token: string
 }

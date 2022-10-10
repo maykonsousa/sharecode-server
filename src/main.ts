@@ -18,9 +18,7 @@ import { FindPostsByUser } from './application/usecases/posts/FindPostsByUser'
 import { FindPublicPosts } from './application/usecases/posts/FindPublicPosts'
 import { RemovePost } from './application/usecases/posts/RemovePost'
 import { Bcrypt } from './infra/adapters/Bcrypt'
-import { Ejs } from './infra/adapters/Ejs'
 import { JSONWebToken } from './infra/adapters/JSONWebToken'
-import { Nodemailer } from './infra/adapters/Nodemailer'
 import { Pagination } from './infra/adapters/Pagination'
 import { Validator } from './infra/adapters/Validator'
 import { AuthenticateUserController } from './infra/controllers/accounts/AuthenticateUserController'
@@ -42,115 +40,120 @@ import AuthMiddleware from './infra/http/middlewares/AuthMiddleware'
 import { AuthRoute } from './infra/http/routes/AuthRoute'
 import { PostRoute } from './infra/http/routes/PostRoute'
 import { UserRoute } from './infra/http/routes/UserRoute'
+import { RabbitMQAdapter } from './infra/queue/RabbitMQAdapter'
 import { PostRepositoryPrisma } from './infra/repositories/database/PostRepositoryPrisma'
 import { TokenRepositoryPrisma } from './infra/repositories/database/TokenRepositoryPrisma'
 import { UserRepositoryPrisma } from './infra/repositories/database/UserRepositoryPrisma'
 
-// adapters
-const hash = new Bcrypt()
-const sign = new JSONWebToken()
-const mail = new Nodemailer()
-const template = new Ejs()
-const pagination = new Pagination()
-const validator = new Validator()
-const prisma = new PrismaDBAdapter()
-prisma.connect()
+const init = async () => {
+    // adapters
+    const hash = new Bcrypt()
+    const sign = new JSONWebToken()
+    const pagination = new Pagination()
+    const validator = new Validator()
+    const prisma = new PrismaDBAdapter()
+    prisma.connect()
+    const queue = new RabbitMQAdapter()
+    await queue.connect()
 
-// repositories
-const userRepository = new UserRepositoryPrisma(prisma)
-const tokenRepository = new TokenRepositoryPrisma(prisma)
-const postRepository = new PostRepositoryPrisma(prisma)
-const gitHubGateway = new GitHubGateway()
+    // repositories
+    const userRepository = new UserRepositoryPrisma(prisma)
+    const tokenRepository = new TokenRepositoryPrisma(prisma)
+    const postRepository = new PostRepositoryPrisma(prisma)
+    const gitHubGateway = new GitHubGateway()
 
-// usecases
-const createUser = new CreateUser(userRepository, hash, validator)
-const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mail, template)
-const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
-const getUserGitHub = new GetUserGitHub(gitHubGateway)
-const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-const authenticateUserGitHub = new AuthenticateUserGitHub(gitHubGateway)
-const revokeToken = new RevokeToken(tokenRepository, sign)
-const createPost = new CreatePost(postRepository, userRepository, validator)
-const findPosts = new FindPosts(postRepository, userRepository, sign, pagination)
-const findPostsByUser = new FindPostsByUser(postRepository, userRepository, sign, validator)
-const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign, pagination)
-const activePost = new ActivePost(postRepository, userRepository, sign, validator)
-const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
-const removePost = new RemovePost(postRepository, userRepository, sign, validator)
+    // usecases
+    const createUser = new CreateUser(userRepository, hash, validator, queue)
+    const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, queue)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const getUserGitHub = new GetUserGitHub(gitHubGateway)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUserGitHub = new AuthenticateUserGitHub(gitHubGateway)
+    const revokeToken = new RevokeToken(tokenRepository, sign)
+    const createPost = new CreatePost(postRepository, userRepository, validator)
+    const findPosts = new FindPosts(postRepository, userRepository, sign, pagination)
+    const findPostsByUser = new FindPostsByUser(postRepository, userRepository, sign, validator)
+    const findPublicPosts = new FindPublicPosts(postRepository, userRepository, sign, pagination)
+    const activePost = new ActivePost(postRepository, userRepository, sign, validator)
+    const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
+    const removePost = new RemovePost(postRepository, userRepository, sign, validator)
+    
+    // controllers
+    const createUserController = new CreateUserController(createUser)
+    const authenticateUserController = new AuthenticateUserController(authenticateUser)
+    const authenticateUserGitHubController = new AuthenticateUserGitHubController(getUserGitHub, authenticateUserGitHub)
+    const forgotPasswordController = new ForgotPasswordContoller(forgotPassword)
+    const resetPasswordController = new ResetPasswordController(resetPassword)
+    const revokeTokenController = new RevokeTokenController(revokeToken)
+    const createPostController = new CreatePostController(createPost)
+    const findPostsController = new FindPostsController(findPosts)
+    const findPostsByUserController = new FindPostsByUserController(findPostsByUser)
+    const findPublicPostsController = new FindPublicPostsController(findPublicPosts)
+    const activePostController = new ActivePostController(activePost)
+    const deactivePostController = new DeactivePostController(deactivePost)
+    const removePostController = new RemovePostController(removePost)
 
-// controllers
-const createUserController = new CreateUserController(createUser)
-const authenticateUserController = new AuthenticateUserController(authenticateUser)
-const authenticateUserGitHubController = new AuthenticateUserGitHubController(getUserGitHub, authenticateUserGitHub)
-const forgotPasswordController = new ForgotPasswordContoller(forgotPassword)
-const resetPasswordController = new ResetPasswordController(resetPassword)
-const revokeTokenController = new RevokeTokenController(revokeToken)
-const createPostController = new CreatePostController(createPost)
-const findPostsController = new FindPostsController(findPosts)
-const findPostsByUserController = new FindPostsByUserController(findPostsByUser)
-const findPublicPostsController = new FindPublicPostsController(findPublicPosts)
-const activePostController = new ActivePostController(activePost)
-const deactivePostController = new DeactivePostController(deactivePost)
-const removePostController = new RemovePostController(removePost)
+    const app = express()
+    const port = process.env.PORT || 3000
 
-const app = express()
-const port = process.env.PORT || 3000
+    app.use(express.json())
 
-app.use(express.json())
+    new UserRoute(
+        app,
+        createUserController,
+        authenticateUserGitHubController,
+        forgotPasswordController,
+        resetPasswordController
+    ).init()
 
-new UserRoute(
-    app,
-    createUserController,
-    authenticateUserGitHubController,
-    forgotPasswordController,
-    resetPasswordController
-).init()
+    new AuthRoute(
+        app,
+        authenticateUserController,
+        revokeTokenController
+    ).init()
 
-new AuthRoute(
-    app,
-    authenticateUserController,
-    revokeTokenController
-).init()
+    new PostRoute(
+        app,
+        createPostController,
+        findPostsController,
+        findPostsByUserController,
+        findPublicPostsController,
+        activePostController,
+        deactivePostController,
+        removePostController,
+        AuthMiddleware
+    ).init()
 
-new PostRoute(
-    app,
-    createPostController,
-    findPostsController,
-    findPostsByUserController,
-    findPublicPostsController,
-    activePostController,
-    deactivePostController,
-    removePostController,
-    AuthMiddleware
-).init()
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-    res.status(404).json({
-        message: 'resource not found',
-        status: res.status
+    app.use((req: Request, res: Response, next: NextFunction) => {
+        res.status(404).json({
+            message: 'resource not found',
+            status: res.status
+        })
+        next()
     })
-    next()
-})
 
-app.use((
-    err: Error
-        & CustomError
-        & MissingParamError
-        & NotFoundError
-        & UnauthorizedError,
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
-    const status = err.status || 500
-    const message = err.message || 'internal server error'
-    res.status(status).json({
-        message,
-        status
+    app.use((
+        err: Error
+            & CustomError
+            & MissingParamError
+            & NotFoundError
+            & UnauthorizedError,
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ) => {
+        const status = err.status || 500
+        const message = err.message || 'internal server error'
+        res.status(status).json({
+            message,
+            status
+        })
+        next()
     })
-    next()
-})
 
-app.listen(port, () => {
-    console.log(`Starting server in ${port}`)
-})
+    app.listen(port, () => {
+        console.log(`Starting server in ${port}`)
+    })
+}
+
+init()
