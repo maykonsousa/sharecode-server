@@ -47,7 +47,7 @@ test('Not should authenticate user if invalid email', async () => {
         .rejects.toThrowError('invalid login')
 })
 
-test('Not should authenticate user if invalid email', async () => {
+test('Not should authenticate user if invalid password', async () => {
     const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
