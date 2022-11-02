@@ -6,7 +6,7 @@ export class RabbitMQAdapter implements Queue {
 
     async connect(): Promise<void> {
         this.connection = await amqp.connect({
-            hostname: 'localhost',
+            hostname: process.env.RABBITMQ_HOST,
             username: process.env.RABBITMQ_USER,
             password: process.env.RABBITMQ_PASS
         })
