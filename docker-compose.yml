@@ -19,5 +19,16 @@ services:
       - 8080:15672
       - 5672:5672
     restart: always
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    env_file:
+      - db.env
+    ports:
+      - 27017:27017
+    restart: always
+    volumes:
+      - mongodb_volume:/data/db
 volumes:
   postgres_volume:
+  mongodb_volume:
