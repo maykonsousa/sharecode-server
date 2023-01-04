@@ -7,6 +7,42 @@ beforeEach(() => {
     random = randomBytes(16).toString('hex')
 })
 
+test('Not should create a new user if id is required', () => {
+    expect(() => {
+        new User(
+            '',
+            random,
+            random,
+            `${random}@test.c`,
+            random
+        )
+    }).toThrowError('id is required')
+})
+
+test('Not should create a new user if id is required', () => {
+    expect(() => {
+        new User(
+            random,
+            '',
+            random,
+            `${random}@test.c`,
+            random
+        )
+    }).toThrowError('gh_username is required')
+})
+
+test('Not should create a new user if id is required', () => {
+    expect(() => {
+        new User(
+            random,
+            random,
+            '',
+            `${random}@test.c`,
+            random
+        )
+    }).toThrowError('name is required')
+})
+
 test('Not should create user if invalid email', () => {
     expect(
         () =>
