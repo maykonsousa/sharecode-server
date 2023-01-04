@@ -12,7 +12,6 @@ export class CreateUser {
     constructor(
         readonly userRepository: UserRepository,
         readonly hash: Hash,
-        readonly validator: Validator,
         readonly queue: Queue
     ) { 
         this.fieldsRequired = [
