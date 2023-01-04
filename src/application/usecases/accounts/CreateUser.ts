@@ -24,18 +24,17 @@ export class CreateUser {
     }
 
     async execute(input: CreateUserInput): Promise<CreateUserOutput> {
-        this.validator.isMissingParam(this.fieldsRequired, input)
-        const existsUser = await this.userRepository.findByEmail(input.email)
-        if (existsUser) throw new CustomError(422, 'user already exists')
-        const password = this.hash.encrypt(input.password)
         const user = new User(
             randomUUID(),
             input.gh_username,
             input.name,
             input.email,
-            password,
-            'user'
+            input.password
         )
+        const existsUser = await this.userRepository.findByEmail(user.email.getValue())
+        if (existsUser) throw new CustomError(422, 'user already exists')
+        const encryptedPassword = this.hash.encrypt(user.password.getValue())
+        user.password.setValue(encryptedPassword)
         await this.userRepository.save(user)
         await this.queue.publish('userCreated', {
             id: user.id,
