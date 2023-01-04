@@ -19,7 +19,7 @@ test('Not should create a new user if id is required', () => {
     }).toThrowError('id is required')
 })
 
-test('Not should create a new user if id is required', () => {
+test('Not should create a new user if gh_username is required', () => {
     expect(() => {
         new User(
             random,
@@ -31,7 +31,7 @@ test('Not should create a new user if id is required', () => {
     }).toThrowError('gh_username is required')
 })
 
-test('Not should create a new user if id is required', () => {
+test('Not should create a new user if name is required', () => {
     expect(() => {
         new User(
             random,
