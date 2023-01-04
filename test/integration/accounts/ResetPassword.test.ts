@@ -52,7 +52,7 @@ test('Not should reset password if token not found', async () => {
 })
 
 test('Not should reset password if not allowed', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     await authenticateUser.execute(inputUser)
@@ -65,7 +65,7 @@ test('Not should reset password if not allowed', async () => {
 })
 
 test('Not should reset password if user not found', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)
@@ -78,7 +78,7 @@ test('Not should reset password if user not found', async () => {
 })
 
 test('Not should reset password if password should be diff to old password', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)
@@ -90,7 +90,7 @@ test('Not should reset password if password should be diff to old password', asy
 })
 
 test('Should reset password', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)

@@ -1,5 +1,5 @@
-import 'dotenv/config'
 import { randomBytes } from 'crypto'
+import 'dotenv/config'
 import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser'
 import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
 import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
@@ -48,7 +48,7 @@ test('Not should authenticate user if invalid email', async () => {
 })
 
 test('Not should authenticate user if invalid password', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     inputUser.password = '12345'
@@ -57,7 +57,7 @@ test('Not should authenticate user if invalid password', async () => {
 })
 
 test('Should authenticate user', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)

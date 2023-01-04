@@ -51,7 +51,7 @@ test('Not should create post if user not found', async () => {
 })
 
 test('Should create post', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     inputPost.user_id = outputCreateUser.id

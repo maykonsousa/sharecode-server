@@ -59,7 +59,7 @@ beforeEach(async () => {
 })
 
 test('Not should find posts if missing param', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
@@ -76,7 +76,7 @@ test('Not should find posts if missing param', async () => {
 })
 
 test('Not should find posts if invalid token', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
@@ -93,7 +93,7 @@ test('Not should find posts if invalid token', async () => {
 })
 
 test('Not should find posts if user not found', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
@@ -113,7 +113,7 @@ test('Not should find posts if user not found', async () => {
 })
 
 test('Not should find posts if not allowed', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
@@ -127,7 +127,7 @@ test('Not should find posts if not allowed', async () => {
 })
 
 test('Should find posts', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({

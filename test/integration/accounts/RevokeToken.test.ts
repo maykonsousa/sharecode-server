@@ -53,7 +53,7 @@ test('Not should revoke token if token not found', async () => {
 })
 
 test('Not should revoke token if token not found', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const ouputAuthenticateUser = await authenticateUser.execute(inputUser)
@@ -64,7 +64,7 @@ test('Not should revoke token if token not found', async () => {
 })
 
 test('Should revoke token', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
     const ouputAuthenticateUser = await authenticateUser.execute(inputUser)

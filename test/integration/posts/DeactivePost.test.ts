@@ -64,7 +64,7 @@ test('Not should deactive post if post not found', async () => {
 })
 
 test('Not should deactive post if post already deactivated', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     inputPost.user_id = outputCreateUser.id
@@ -79,7 +79,7 @@ test('Not should deactive post if post already deactivated', async () => {
 })
 
 test('Not should deactive post if invalid token', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     inputPost.user_id = outputCreateUser.id
@@ -97,7 +97,7 @@ test('Not should deactive post if invalid token', async () => {
 })
 
 test('Not should deactive post if user not found', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     const setUserType = new SetUserType(userRepository, validator)
@@ -118,7 +118,7 @@ test('Not should deactive post if user not found', async () => {
 })
 
 test('Not should deactive post if not allowed', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     const setUserType = new SetUserType(userRepository, validator)
@@ -142,7 +142,7 @@ test('Not should deactive post if not allowed', async () => {
 })
 
 test('Should deactive post', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     const setUserType = new SetUserType(userRepository, validator)

@@ -56,7 +56,7 @@ beforeEach(async () => {
 })
 
 test('Not should active post if post not found', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
@@ -74,7 +74,7 @@ test('Not should active post if post not found', async () => {
 })
 
 test('Not should active post if post already activated', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -98,7 +98,7 @@ test('Not should active post if post already activated', async () => {
 })
 
 test('Not should active post if invalid token', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -116,7 +116,7 @@ test('Not should active post if invalid token', async () => {
 })
 
 test('Not should active post if invalid token', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -137,7 +137,7 @@ test('Not should active post if invalid token', async () => {
 })
 
 test('Not should active post if not allowed', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -152,7 +152,7 @@ test('Not should active post if not allowed', async () => {
 })
 
 test('Should active post by user', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -174,7 +174,7 @@ test('Should active post by user', async () => {
 })
 
 test('Should create actived post by admin', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({

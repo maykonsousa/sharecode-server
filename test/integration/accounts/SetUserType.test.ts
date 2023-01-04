@@ -2,20 +2,14 @@ import { randomBytes } from 'crypto'
 import 'dotenv/config'
 import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
 import { SetUserType } from '../../../src/application/usecases/accounts/SetUserType'
-import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
 import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
-import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
-import { Sign } from '../../../src/infra/adapters/Sign'
 import { Validator } from '../../../src/infra/adapters/Validator'
 import { Queue } from '../../../src/infra/queue/Queue'
-import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
 let userRepository: UserRepository
-let tokenRepository: TokenRepository
 let hash: Bcrypt
-let sign: Sign
 let validator: Validator
 let inputUser: any
 
@@ -27,9 +21,7 @@ const mockedQueue: Queue = {
 
 beforeEach(async () => {
     userRepository = new UserRepositoryMemory()
-    tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
-    sign = new JSONWebToken()
     validator = new Validator()
     const random = randomBytes(16).toString('hex')
     inputUser = {
@@ -50,7 +42,7 @@ test('Not should set user type admin if user not found', async () => {
 })
 
 test('Should set user type admin', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({

@@ -7,7 +7,6 @@ import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Sign } from '../../../src/infra/adapters/Sign'
-import { Validator } from '../../../src/infra/adapters/Validator'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
@@ -16,7 +15,6 @@ let userRepository: UserRepository
 let tokenRepository: TokenRepository
 let hash: Bcrypt
 let sign: Sign
-let validator: Validator
 let inputUser: any
 
 const mockedQueue: Queue = {
@@ -30,7 +28,6 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     sign = new JSONWebToken()
-    validator = new Validator()
     const random = randomBytes(16).toString('hex')
     inputUser = {
         gh_username: random,
@@ -52,7 +49,7 @@ test('Not should forgot password if user not found', async () => {
 })
 
 test('Should forgot password', async () => {
-    const createUser = new CreateUser(userRepository, hash, validator, mockedQueue)
+    const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)
