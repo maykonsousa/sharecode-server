@@ -2,7 +2,6 @@ import { randomUUID } from 'crypto'
 import { User } from '../../../domain/entities/User'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Hash } from '../../../infra/adapters/Hash'
-import { Validator } from '../../../infra/adapters/Validator'
 import { Queue } from '../../../infra/queue/Queue'
 import { CustomError } from '../../exceptions/CustomError'
 
@@ -13,14 +12,7 @@ export class CreateUser {
         readonly userRepository: UserRepository,
         readonly hash: Hash,
         readonly queue: Queue
-    ) { 
-        this.fieldsRequired = [
-            'gh_username',
-            'name',
-            'email',
-            'password'
-        ]
-    }
+    ) { }
 
     async execute(input: CreateUserInput): Promise<CreateUserOutput> {
         const user = new User(
