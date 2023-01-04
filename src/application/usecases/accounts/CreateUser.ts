@@ -5,9 +5,18 @@ import { Hash } from '../../../infra/adapters/Hash'
 import { Queue } from '../../../infra/queue/Queue'
 import { CustomError } from '../../exceptions/CustomError'
 
-export class CreateUser {
-    readonly fieldsRequired: string[]
+export type CreateUserInput = {
+    gh_username: string
+    name: string
+    email: string
+    password: string
+}
 
+type CreateUserOutput = {
+    id: string
+}
+
+export class CreateUser {
     constructor(
         readonly userRepository: UserRepository,
         readonly hash: Hash,
@@ -36,15 +45,4 @@ export class CreateUser {
             id: user.id
         }
     }
-}
-
-export type CreateUserInput = {
-    gh_username: string
-    name: string
-    email: string
-    password: string
-}
-
-type CreateUserOutput = {
-    id: string
 }
