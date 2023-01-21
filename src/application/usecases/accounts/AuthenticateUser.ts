@@ -1,11 +1,12 @@
 import { randomUUID } from 'crypto'
 import { CurrentDate } from '../../../domain/entities/CurrentDate'
 import { Token } from '../../../domain/entities/Token'
+import { Email } from '../../../domain/entities/value-objects/Email'
+import { Password } from '../../../domain/entities/value-objects/Password'
 import { TokenRepository } from '../../../domain/repositories/TokenRepository'
 import { UserRepository } from '../../../domain/repositories/UserRepository'
 import { Hash } from '../../../infra/adapters/Hash'
 import { Sign } from '../../../infra/adapters/Sign'
-import { Validator } from '../../../infra/adapters/Validator'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class AuthenticateUser {
@@ -15,20 +16,15 @@ export class AuthenticateUser {
         readonly userRepository: UserRepository,
         readonly tokenRepository: TokenRepository,
         readonly hash: Hash,
-        readonly sign: Sign,
-        readonly validator: Validator
-    ) { 
-        this.fieldsRequired = [
-            'email',
-            'password'
-        ]
-    }
+        readonly sign: Sign
+    ) { }
 
     async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
-        this.validator.isMissingParam(this.fieldsRequired, input)
+        this.validate(input)
         const existsUser = await this.userRepository.findByEmail(input.email)
         if (!existsUser) throw new UnauthorizedError('invalid login')
-        const isPasswordMath = this.hash.decrypt(input.password,existsUser.password.getValue())
+        const password = new Password(input.password)
+        const isPasswordMath = this.hash.decrypt(password.getValue(), existsUser.password.getValue())
         if (!isPasswordMath) throw new UnauthorizedError('invalid login')
         const encodedToken = this.sign.encode({
             id: existsUser.id,
@@ -49,9 +45,16 @@ export class AuthenticateUser {
             refreshToken: token.id
         }
     }
+
+    private validate(input: AuthenticateUserInput): void {
+        if (!input.email) throw new Error('email is required')
+        if (!input.password) throw new Error('password is required')
+        new Email(input.email)
+        new Password(input.password)
+    }
 }
 
-type AuthenticateUserInput = {
+export type AuthenticateUserInput = {
     email: string
     password: string
 }
