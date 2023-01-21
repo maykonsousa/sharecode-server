@@ -17,7 +17,7 @@ beforeEach(async () => {
         publish: jest.fn(),
         connect: jest.fn(),
         close: jest.fn()
-    }    
+    }
     inputUser = {
         gh_username: random,
         name: random,
