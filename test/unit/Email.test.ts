@@ -2,7 +2,7 @@ import { randomBytes } from 'crypto'
 import { Email } from '../../src/domain/entities/value-objects/Email'
 
 test('Not create email if is required', () => {
-    expect(() => new Email('')).toThrowError('invalid email')
+    expect(() => new Email('')).toThrowError('email is required')
 })
 
 test('Not create email if invalid email', () => {
