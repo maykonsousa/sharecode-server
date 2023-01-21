@@ -69,7 +69,7 @@ test('Not should deactive post if post already deactivated', async () => {
     const createPost = new CreatePost(postRepository, userRepository, validator)
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
     await expect(deactivePost.execute({
@@ -107,7 +107,7 @@ test('Not should deactive post if user not found', async () => {
     })
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
     await userRepository.clean()
@@ -128,7 +128,7 @@ test('Not should deactive post if not allowed', async () => {
     })
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
     await setUserType.execute({
@@ -152,7 +152,7 @@ test('Should deactive post', async () => {
     })
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
     await deactivePost.execute({

@@ -54,7 +54,7 @@ test('Not should reset password if token not found', async () => {
 test('Not should reset password if not allowed', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     await authenticateUser.execute(inputUser)
     const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
     const [token] = await tokenRepository.findAll()

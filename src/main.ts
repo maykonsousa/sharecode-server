@@ -67,7 +67,7 @@ const init = async () => {
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, queue)
     const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
     const getUserGitHub = new GetUserGitHub(gitHubGateway)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const authenticateUserGitHub = new AuthenticateUserGitHub(gitHubGateway)
     const revokeToken = new RevokeToken(tokenRepository, sign)
     const createPost = new CreatePost(postRepository, userRepository, validator)

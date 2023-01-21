@@ -8,7 +8,6 @@ import { UserRepository } from '../../../src/domain/repositories/UserRepository'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Sign } from '../../../src/infra/adapters/Sign'
-import { Validator } from '../../../src/infra/adapters/Validator'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
@@ -17,7 +16,6 @@ let userRepository: UserRepository
 let tokenRepository: TokenRepository
 let hash: Bcrypt
 let sign: Sign
-let validator: Validator
 let inputUser: any
 
 const mockedQueue: Queue = {
@@ -31,7 +29,6 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     sign = new JSONWebToken()
-    validator = new Validator()
     const random = randomBytes(16).toString('hex')
     inputUser = {
         gh_username: random,
@@ -55,7 +52,7 @@ test('Not should revoke token if token not found', async () => {
 test('Not should revoke token if token not found', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const ouputAuthenticateUser = await authenticateUser.execute(inputUser)
     const revokeToken = new RevokeToken(tokenRepository, sign)
     await revokeToken.execute(ouputAuthenticateUser.refreshToken)
@@ -66,7 +63,7 @@ test('Not should revoke token if token not found', async () => {
 test('Should revoke token', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const ouputAuthenticateUser = await authenticateUser.execute(inputUser)
     const revokeToken = new RevokeToken(tokenRepository, sign)
     const outputRevokeToken = await revokeToken.execute(ouputAuthenticateUser.refreshToken)

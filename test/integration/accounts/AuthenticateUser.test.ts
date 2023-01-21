@@ -1,65 +1,81 @@
-import { randomBytes } from 'crypto'
 import 'dotenv/config'
-import { AuthenticateUser } from '../../../src/application/usecases/accounts/AuthenticateUser'
-import { CreateUser } from '../../../src/application/usecases/accounts/CreateUser'
-import { TokenRepository } from '../../../src/domain/repositories/TokenRepository'
-import { UserRepository } from '../../../src/domain/repositories/UserRepository'
+import { AuthenticateUser, AuthenticateUserInput } from '../../../src/application/usecases/accounts/AuthenticateUser'
+import { CreateUser, CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
-import { Sign } from '../../../src/infra/adapters/Sign'
-import { Validator } from '../../../src/infra/adapters/Validator'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
-let userRepository: UserRepository
-let tokenRepository: TokenRepository
-let hash: Bcrypt
-let sign: Sign
-let validator: Validator
-let inputUser: any
-
-const mockedQueue: Queue = {
-    publish: jest.fn(),
-    connect: jest.fn(),
-    close: jest.fn()
-}
+let createUser: CreateUser
+let authenticateUser: AuthenticateUser
 
 beforeEach(async () => {
-    userRepository = new UserRepositoryMemory()
-    tokenRepository = new TokenRepositoryMemory()
-    hash = new Bcrypt()
-    sign = new JSONWebToken()
-    validator = new Validator()
-    const random = randomBytes(16).toString('hex')
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    const userRepository = new UserRepositoryMemory()
+    const tokenRepository = new TokenRepositoryMemory()
+    const hash = new Bcrypt()
+    const sign = new JSONWebToken()
+    const queue: Queue = {
+        publish: jest.fn(),
+        connect: jest.fn(),
+        close: jest.fn()
     }
+    createUser = new CreateUser(userRepository, hash, queue)
+    authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     await userRepository.clean()
 })
 
-test('Not should authenticate user if invalid email', async () => {
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-    await expect(authenticateUser.execute(inputUser))
-        .rejects.toThrowError('invalid login')
+test('Not should authenticate user if email is required', async () => {
+    const inputAuthenticateUser: AuthenticateUserInput = {
+        email: '',
+        password: '123456',
+    }
+    expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('email is required')
 })
 
-test('Not should authenticate user if invalid password', async () => {
-    const createUser = new CreateUser(userRepository, hash, mockedQueue)
-    await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-    inputUser.password = '12345'
-    await expect(authenticateUser.execute(inputUser))
-        .rejects.toThrowError('invalid login')
+test('Not should authenticate user if password is required', async () => {
+    const inputAuthenticateUser: AuthenticateUserInput = {
+        email: 'cont.juliano@outlook.com',
+        password: '',
+    }
+    expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('password is required')
+})
+
+test('Should return a invalid login if email is invalid', async () => {
+    const inputAuthenticateUser: AuthenticateUserInput = {
+        email: 'cont.juliano@outlook.com',
+        password: '123456',
+    }
+    expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('invalid login')
+})
+
+test('Should return a invalid login if password is invalid', async () => {
+    const inputCreateUser:CreateUserInput = {
+        name: 'Juliano',
+        gh_username: 'julianojj',
+        email: 'cont.juliano@outlook.com',
+        password: '123456'
+    }
+    await createUser.execute(inputCreateUser)
+    const inputAuthenticateUser: AuthenticateUserInput = {
+        email: inputCreateUser.email,
+        password: '1234567',
+    }
+    expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('invalid login')
 })
 
 test('Should authenticate user', async () => {
-    const createUser = new CreateUser(userRepository, hash, mockedQueue)
-    await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
-    const outputAuthenticateUser = await authenticateUser.execute(inputUser)
-    expect(sign.decode(outputAuthenticateUser.token)).toBeTruthy()
+    const inputCreateUser:CreateUserInput = {
+        name: 'Juliano',
+        gh_username: 'julianojj',
+        email: 'cont.juliano@outlook.com',
+        password: '123456'
+    }
+    await createUser.execute(inputCreateUser)
+    const inputAuthenticateUser: AuthenticateUserInput = {
+        email: inputCreateUser.email,
+        password: inputCreateUser.password,
+    }
+    const outputAuthenticateUser = await authenticateUser.execute(inputAuthenticateUser)
+    expect(outputAuthenticateUser).toHaveProperty('token')
 })

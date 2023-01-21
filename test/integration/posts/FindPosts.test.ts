@@ -100,7 +100,7 @@ test('Not should find posts if user not found', async () => {
         id: outputCreateUser.id,
         type: 'admin'
     })
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -115,7 +115,7 @@ test('Not should find posts if user not found', async () => {
 test('Not should find posts if not allowed', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -134,7 +134,7 @@ test('Should find posts', async () => {
         id: outputCreateUser.id,
         type: 'admin'
     })
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)

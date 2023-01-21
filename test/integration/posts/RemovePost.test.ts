@@ -79,7 +79,7 @@ test('Not should remove post if invalid token', async () => {
 test('Not should remove post if user not found', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -95,7 +95,7 @@ test('Not should remove post if user not found', async () => {
 test('Should remove post by user', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -117,7 +117,7 @@ test('Should remove post by admin', async () => {
         id: outputCreateUser.id,
         type: 'admin'
     })
-    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign, validator)
+    const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
