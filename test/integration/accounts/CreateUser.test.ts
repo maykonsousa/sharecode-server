@@ -5,7 +5,6 @@ import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
-
 let createUser: CreateUser
 let inputUser: CreateUserInput
 let userRepository: UserRepository
@@ -18,7 +17,7 @@ beforeEach(async () => {
         publish: jest.fn(),
         connect: jest.fn(),
         close: jest.fn()
-    }    
+    }
     inputUser = {
         gh_username: random,
         name: random,
