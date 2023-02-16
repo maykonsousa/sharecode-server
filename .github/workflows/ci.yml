@@ -3,6 +3,7 @@ on: [push]
 jobs:
   test:
     runs-on: ubuntu-20.04
+    environment: development
     steps:
     - uses: actions/checkout@v3
     - name: Set Up Node
