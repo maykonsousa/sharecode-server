@@ -12,4 +12,6 @@ jobs:
     - name: Install dependencies
       run: yarn
     - name: Run tests
+      env:
+        JWT_KEY: ${{ secrets.JWT_KEY }}
       run: yarn jest
