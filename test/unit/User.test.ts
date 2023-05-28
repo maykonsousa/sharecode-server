@@ -1,5 +1,6 @@
 import { randomBytes } from 'crypto'
 import { User } from '../../src/core/domain/User'
+import { ValidationMessages } from '../../src/core/exceptions/ValidationMessages'
 
 let random: string
 
@@ -16,7 +17,7 @@ test('return exception if empy id', () => {
             `${random}@test.com`,
             random
         )
-    }).toThrowError('id is required')
+    }).toThrowError(ValidationMessages.EMPTY_USER_ID)
 })
 
 test('return exception if empty gh_username', () => {
@@ -28,7 +29,7 @@ test('return exception if empty gh_username', () => {
             `${random}@test.com`,
             random
         )
-    }).toThrowError('gh_username is required')
+    }).toThrowError(ValidationMessages.EMPTY_USER_USERNAME)
 })
 
 test('return exception if empty name', () => {
@@ -40,7 +41,7 @@ test('return exception if empty name', () => {
             `${random}@test.com`,
             random
         )
-    }).toThrowError('name is required')
+    }).toThrowError(ValidationMessages.EMPTY_USER_NAME)
 })
 
 test('return exception if invalid email', () => {
@@ -53,7 +54,7 @@ test('return exception if invalid email', () => {
                 `${random}@test.c`,
                 random
             )
-    ).toThrowError('invalid email')
+    ).toThrowError(ValidationMessages.INVALID_EMAIL)
 })
 
 test('return exception if invalid password', () => {
@@ -66,7 +67,7 @@ test('return exception if invalid password', () => {
                 `${random}@test.com`,
                 '1'
             )
-    ).toThrowError('invalid password')
+    ).toThrowError(ValidationMessages.INVALID_PASSWORD)
 })
 
 test('new user', () => {
@@ -78,4 +79,28 @@ test('new user', () => {
         random
     )
     expect(user.gh_username).toBe(random)
+})
+
+test('update rule', () => {
+    const user = User.create(
+        random,
+        random,
+        random,
+        `${random}@test.com`,
+        random
+    )
+    user.updateRule('admin')
+    expect(user.getRule()).toBe('admin')
+})
+
+test('update password', () => {
+    const user = User.create(
+        random,
+        random,
+        random,
+        `${random}@test.com`,
+        random
+    )
+    user.updatePassword('123456')
+    expect(user.getPassword()).toBe('123456')
 })
