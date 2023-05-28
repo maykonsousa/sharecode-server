@@ -64,7 +64,7 @@ test('Not should find posts if missing param', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -81,7 +81,7 @@ test('Not should find posts if invalid token', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
@@ -98,7 +98,7 @@ test('Not should find posts if user not found', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)
@@ -132,7 +132,7 @@ test('Should find posts', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)

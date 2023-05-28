@@ -65,7 +65,7 @@ test('Not should active post if post not found', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     await expect(activePost.execute({
         id: '1234',
@@ -85,7 +85,7 @@ test('Not should active post if post already activated', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     await activePost.execute({
         id: outputCreatePost.id,
@@ -107,7 +107,7 @@ test('Not should active post if invalid token', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     await expect(activePost.execute({
         id: outputCreatePost.id,
@@ -115,7 +115,7 @@ test('Not should active post if invalid token', async () => {
     })).rejects.toThrowError('invalid token')
 })
 
-test('Not should active post if invalid token', async () => {
+test('Not should active post if user not found', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     inputPost.user_id = outputCreateUser.id
@@ -127,7 +127,7 @@ test('Not should active post if invalid token', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: outputAuthenticateUser.token
+        rule: 'admin'
     })
     await userRepository.clean()
     await expect(activePost.execute({
@@ -163,7 +163,7 @@ test('Should active post by user', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     await activePost.execute({
         id: outputCreatePost.id,
@@ -179,7 +179,7 @@ test('Should create actived post by admin', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     inputPost.user_id = outputCreateUser.id
     const createPost = new CreatePost(postRepository, userRepository, validator)
