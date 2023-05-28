@@ -28,7 +28,7 @@ export class AuthenticateUser {
         if (!isPasswordMath) throw new UnauthorizedError('invalid login')
         const encodedToken = this.sign.encode({
             id: existsUser.id,
-            type: existsUser.type
+            type: existsUser.getRule()
         }, '1h')
         const expiresAt = new CurrentDate().addHours(1)
         const token = new Token(

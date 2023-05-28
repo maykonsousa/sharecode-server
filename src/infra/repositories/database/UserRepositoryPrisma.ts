@@ -15,7 +15,7 @@ export class UserRepositoryPrisma implements UserRepository {
             name: user.name,
             email: user.email.getValue(),
             password: user.password.getValue(),
-            type: user.type
+            type: user.rule
         }
         await connection.user.create({ data })
     }
@@ -78,7 +78,7 @@ export class UserRepositoryPrisma implements UserRepository {
             name: user.name,
             email: user.email.getValue(),
             password: user.password.getValue(),
-            type: user.type
+            type: user.rule
         }
         await connection.user.update({
             where: {

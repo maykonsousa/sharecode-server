@@ -19,7 +19,7 @@ export class ForgotPassword {
         if (!email) throw new MissingParamError('email is required')
         const user = await this.userRepository.findByEmail(email)
         if (!user) return
-        const encodedToken = this.sign.encode({ id: user.id, type: user.type }, '15m')
+        const encodedToken = this.sign.encode({ id: user.id, type: user.getRule() }, '15m')
         const currentDate = new CurrentDate()
         const expiredAt = currentDate.addMinutes(15)
         const token = new Token(randomUUID(), encodedToken, user.id, 'forgot_password', false, expiredAt)

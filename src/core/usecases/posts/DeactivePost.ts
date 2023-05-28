@@ -35,7 +35,7 @@ export class DeactivePost {
         }
         const existsUser = await this.userRepository.find(id)
         if (!existsUser) throw new NotFoundError('user not found')
-        if (existsUser.type === 'user') throw new CustomError(403, 'not allowed')
+        if (existsUser.getRule() === 'user') throw new CustomError(403, 'not allowed')
         const IS_ACTIVE = false
         const post = new Post(
             existsPost.id,

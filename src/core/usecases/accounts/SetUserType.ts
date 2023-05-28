@@ -12,7 +12,7 @@ export class SetUserType {
     ) { 
         this.fieldsRequired = [
             'id',
-            'type'
+            'rule'
         ]
     }
 
@@ -25,14 +25,14 @@ export class SetUserType {
             existsUser.gh_username,
             existsUser.name,
             existsUser.email.getValue(),
-            existsUser.password.getValue(),
-            input.type
+            existsUser.password.getValue()
         )
+        user.updateRule(input.rule)
         await this.userRepository.update(user)
     }
 }
 
 type SetUserTypeInput = {
     id: string
-    type: string
+    rule: string
 }

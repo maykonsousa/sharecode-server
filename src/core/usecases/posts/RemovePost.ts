@@ -33,7 +33,7 @@ export class RemovePost {
         }
         const existsUser = await this.userRepository.find(id)
         if (!existsUser) throw new NotFoundError('user not found')
-        if (existsUser.type !== 'user') {
+        if (existsUser.getRule() !== 'user') {
             await this.postRepository.delete(existsPost.id)
             return
         }

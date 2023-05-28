@@ -43,8 +43,7 @@ export class ResetPassword {
             existsUser.gh_username,
             existsUser.name,
             existsUser.email.getValue(),
-            input.password,
-            existsUser.type
+            input.password
         )
         const password = this.hash.encrypt(input.password)
         user.password.setValue(password)
