@@ -115,7 +115,7 @@ test('Should remove post by admin', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const outputAuthenticateUser = await authenticateUser.execute(inputUser)

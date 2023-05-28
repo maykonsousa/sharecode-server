@@ -33,22 +33,22 @@ beforeEach(async () => {
     await userRepository.clean()
 })
 
-test('Not should set user type admin if user not found', async () => {
+test('Not should set rule admin if user not found', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await expect(setUserType.execute({
         id: '1234',
-        type: 'admin'
+        rule: 'admin'
     })).rejects.toThrowError('user not found')
 })
 
-test('Should set user type admin', async () => {
+test('Should set rule admin', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     const user = await userRepository.find(outputCreateUser.id)
-    expect(user.type).toBe('admin')
+    expect(user.getRule()).toBe('admin')
 })

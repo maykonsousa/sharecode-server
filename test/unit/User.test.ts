@@ -51,8 +51,7 @@ test('Not should create user if invalid email', () => {
                 random,
                 random,
                 `${random}@test.c`,
-                random,
-                'user'
+                random
             )
     ).toThrowError('invalid email')
 })
@@ -65,8 +64,7 @@ test('Not should create user if invalid password', () => {
                 random,
                 random,
                 `${random}@test.com`,
-                '1',
-                'user'
+                '1'
             )
     ).toThrowError('invalid password')
 })
@@ -77,8 +75,7 @@ test('Should create user', () => {
         random,
         random,
         `${random}@test.com`,
-        random,
-        'user'
+        random
     )
     expect(user.gh_username).toBe(random)
 })

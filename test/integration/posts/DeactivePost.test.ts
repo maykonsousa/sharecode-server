@@ -86,7 +86,7 @@ test('Not should deactive post if invalid token', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     const outputCreatePost = await createPost.execute(inputPost)
     const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
@@ -103,7 +103,7 @@ test('Not should deactive post if user not found', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
@@ -124,7 +124,7 @@ test('Not should deactive post if not allowed', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
@@ -133,7 +133,7 @@ test('Not should deactive post if not allowed', async () => {
     const deactivePost = new DeactivePost(postRepository, userRepository, sign, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'user'
+        rule: 'user'
     })
     await expect(deactivePost.execute({
         id: outputCreatePost.id,
@@ -148,7 +148,7 @@ test('Should deactive post', async () => {
     const setUserType = new SetUserType(userRepository, validator)
     await setUserType.execute({
         id: outputCreateUser.id,
-        type: 'admin'
+        rule: 'admin'
     })
     inputPost.user_id = outputCreateUser.id
     const outputCreatePost = await createPost.execute(inputPost)
