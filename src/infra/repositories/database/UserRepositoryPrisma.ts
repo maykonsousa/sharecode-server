@@ -13,9 +13,9 @@ export class UserRepositoryPrisma implements UserRepository {
             id: user.id,
             gh_username: user.gh_username,
             name: user.name,
-            email: user.email.getValue(),
-            password: user.password.getValue(),
-            type: user.rule
+            email: user.email,
+            password: user.getPassword(),
+            type: user.getRule()
         }
         await connection.user.create({ data })
     }
@@ -26,7 +26,7 @@ export class UserRepositoryPrisma implements UserRepository {
         const users: User[] = []
         for (const userData of usersData) {
             users.push(
-                new User(
+                User.buildExistingUser(
                     userData.id,
                     userData.gh_username,
                     userData.name,
@@ -45,7 +45,7 @@ export class UserRepositoryPrisma implements UserRepository {
             where: { id }
         })
         if (!userData) return undefined
-        return new User(
+        return User.buildExistingUser(
             userData.id,
             userData.gh_username,
             userData.name,
@@ -61,7 +61,7 @@ export class UserRepositoryPrisma implements UserRepository {
             where: { email },
         })
         if (!userData) return undefined
-        return new User(
+        return User.buildExistingUser(
             userData.id,
             userData.gh_username,
             userData.name,
@@ -76,9 +76,9 @@ export class UserRepositoryPrisma implements UserRepository {
         const data = {
             gh_username: user.gh_username,
             name: user.name,
-            email: user.email.getValue(),
-            password: user.password.getValue(),
-            type: user.rule
+            email: user.email,
+            password: user.getPassword(),
+            type: user.getRule()
         }
         await connection.user.update({
             where: {
