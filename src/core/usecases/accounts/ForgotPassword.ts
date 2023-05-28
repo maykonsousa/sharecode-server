@@ -17,17 +17,17 @@ export class ForgotPassword {
 
     async execute(email: string): Promise<ForgotPasswordOutput> {
         if (!email) throw new MissingParamError('email is required')
-        const user = await this.userRepository.findByEmail(email)
-        if (!user) return
-        const encodedToken = this.sign.encode({ id: user.id, type: user.getRule() }, '15m')
+        const existingUser = await this.userRepository.findByEmail(email)
+        if (!existingUser) return
+        const encodedToken = this.sign.encode({ id: existingUser.id, type: existingUser.getRule() }, '15m')
         const currentDate = new CurrentDate()
         const expiredAt = currentDate.addMinutes(15)
-        const token = new Token(randomUUID(), encodedToken, user.id, 'forgot_password', false, expiredAt)
+        const token = new Token(randomUUID(), encodedToken, existingUser.id, 'forgot_password', false, expiredAt)
         await this.tokenRepository.save(token)
         await this.queue.publish('passwordForgot', {
-            id: user.id,
-            name: user.name,
-            email: user.email.getValue(),
+            id: existingUser.id,
+            name: existingUser.name,
+            email: existingUser.email,
             token: encodedToken
         })
         return {
