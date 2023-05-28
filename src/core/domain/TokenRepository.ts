@@ -1,4 +1,4 @@
-import { Token } from '../entities/Token'
+import { Token } from '../domain/Token'
 
 export interface TokenRepository {
     save(token: Token): Promise<void>
