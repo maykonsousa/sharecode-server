@@ -21,20 +21,20 @@ export class AuthenticateUser {
 
     async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
         this.validate(input)
-        const existsUser = await this.userRepository.findByEmail(input.email)
-        if (!existsUser) throw new UnauthorizedError('invalid login')
+        const existingUser = await this.userRepository.findByEmail(input.email)
+        if (!existingUser) throw new UnauthorizedError('invalid login')
         const password = new Password(input.password)
-        const isPasswordMath = this.hash.decrypt(password.getValue(), existsUser.password.getValue())
+        const isPasswordMath = this.hash.decrypt(password.getValue(), existingUser.getPassword())
         if (!isPasswordMath) throw new UnauthorizedError('invalid login')
         const encodedToken = this.sign.encode({
-            id: existsUser.id,
-            type: existsUser.getRule()
+            id: existingUser.id,
+            type: existingUser.getRule()
         }, '1h')
         const expiresAt = new CurrentDate().addHours(1)
         const token = new Token(
             randomUUID(),
             encodedToken,
-            existsUser.id,
+            existingUser.id,
             'refresh_token',
             false,
             expiresAt
