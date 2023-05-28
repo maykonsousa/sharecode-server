@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { Post } from '../../src/core/domain/Post'
 
-test('Should create post', () => {
+test('new post', () => {
     const post = new Post(
         randomUUID(),
         randomUUID(),

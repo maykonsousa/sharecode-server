@@ -7,7 +7,7 @@ beforeEach(() => {
     random = randomBytes(16).toString('hex')
 })
 
-test('Return exception if empy id', () => {
+test('return exception if empy id', () => {
     expect(() => {
         User.create(
             '',
@@ -19,7 +19,7 @@ test('Return exception if empy id', () => {
     }).toThrowError('id is required')
 })
 
-test('Not should create a  if gh_username is required', () => {
+test('return exception if empty gh_username', () => {
     expect(() => {
         User.create(
             random,
@@ -31,7 +31,7 @@ test('Not should create a  if gh_username is required', () => {
     }).toThrowError('gh_username is required')
 })
 
-test('Not should create a user if name is required', () => {
+test('return exception if empty name', () => {
     expect(() => {
         User.create(
             random,
@@ -43,7 +43,7 @@ test('Not should create a user if name is required', () => {
     }).toThrowError('name is required')
 })
 
-test('Not should create user if invalid email', () => {
+test('return exception if invalid email', () => {
     expect(
         () =>
             User.create(
@@ -56,7 +56,7 @@ test('Not should create user if invalid email', () => {
     ).toThrowError('invalid email')
 })
 
-test('Not should create user if invalid password', () => {
+test('return exception if invalid password', () => {
     expect(
         () =>
             User.create(
@@ -69,7 +69,7 @@ test('Not should create user if invalid password', () => {
     ).toThrowError('invalid password')
 })
 
-test('Should create user', () => {
+test('new user', () => {
     const user = User.create(
         random,
         random,

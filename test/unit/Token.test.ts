@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { Token } from '../../src/core/domain/Token'
 
-test('Not should create token if expired token', () => {
+test('return exception if expired token', () => {
     const expiredToken = new Date()
     expiredToken.setDate(expiredToken.getDate() - 1)
     expect(() => new Token(
@@ -14,7 +14,7 @@ test('Not should create token if expired token', () => {
     )).toThrowError('expired token')
 })
 
-test('Should create token', () => {
+test('new token', () => {
     const token = new Token(
         randomUUID(),
         randomUUID(),
