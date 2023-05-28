@@ -13,22 +13,22 @@ export class CreateUser {
     ) { }
 
     async execute(input: CreateUserInput): Promise<CreateUserOutput> {
-        const user = new User(
+        const user = User.create(
             randomUUID(),
             input.gh_username,
             input.name,
             input.email,
             input.password
         )
-        const existsUser = await this.userRepository.findByEmail(user.email.getValue())
-        if (existsUser) throw new CustomError(422, 'user already exists')
-        const encryptedPassword = this.hash.encrypt(user.password.getValue())
-        user.password.setValue(encryptedPassword)
+        const existingUser = await this.userRepository.findByEmail(user.email)
+        if (existingUser) throw new CustomError(422, 'user already exists')
+        const encryptedPassword = this.hash.encrypt(user.getPassword())
+        user.updateEncrypedPassword(encryptedPassword)
         await this.userRepository.save(user)
         await this.queue.publish('userCreated', {
             id: user.id,
             name: user.name,
-            email: user.email.getValue()
+            email: user.email
         })
         return {
             id: user.id
