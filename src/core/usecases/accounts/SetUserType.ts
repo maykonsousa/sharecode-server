@@ -20,12 +20,12 @@ export class SetUserType {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsUser = await this.userRepository.find(input.id)
         if (!existsUser) throw new NotFoundError('user not found')
-        const user = new User(
+        const user = User.create(
             existsUser.id,
             existsUser.gh_username,
             existsUser.name,
-            existsUser.email.getValue(),
-            existsUser.password.getValue()
+            existsUser.email,
+            existsUser.getPassword()
         )
         user.updateRule(input.rule)
         await this.userRepository.update(user)
