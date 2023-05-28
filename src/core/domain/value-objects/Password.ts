@@ -1,4 +1,5 @@
 import { ValidationException } from '../../exceptions/ValidationException'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class Password {
 
@@ -9,7 +10,7 @@ export class Password {
     }
     
     private validate(): void {
-        if (this.isInvalidPassword()) throw new ValidationException('invalid password')
+        if (this.isInvalidPassword()) throw new ValidationException(ValidationMessages.INVALID_PASSWORD)
     }
 
     private isInvalidPassword(): boolean {

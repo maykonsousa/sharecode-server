@@ -1,4 +1,5 @@
 import { ValidationException } from '../../exceptions/ValidationException'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class Rule {
     constructor(
@@ -8,7 +9,7 @@ export class Rule {
     }
 
     private validate(): void {
-        if (this.isInvalidRule()) throw new ValidationException('invalid rule')
+        if (this.isInvalidRule()) throw new ValidationException(ValidationMessages.INVALID_RULE)
     }
 
     private isInvalidRule(): boolean {

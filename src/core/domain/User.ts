@@ -1,3 +1,5 @@
+import { ValidationException } from '../exceptions/ValidationException'
+import { ValidationMessages } from '../exceptions/ValidationMessages'
 import { Email } from './value-objects/Email'
 import { Password } from './value-objects/Password'
 import { Rule } from './value-objects/Rule'
@@ -16,9 +18,9 @@ export class User {
     }
 
     private validate() {
-        if (!this.id) throw new Error('id is required')
-        if (!this.gh_username) throw new Error('gh_username is required')
-        if (!this.name) throw new Error('name is required')
+        if (!this.id) throw new ValidationException(ValidationMessages.EMPTY_USER_ID)
+        if (!this.gh_username) throw new ValidationException(ValidationMessages.EMPTY_USER_USERNAME)
+        if (!this.name) throw new ValidationException(ValidationMessages.EMPTY_USER_NAME)
     }
 
     static create(

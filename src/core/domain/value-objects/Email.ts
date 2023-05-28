@@ -1,4 +1,5 @@
 import { ValidationException } from '../../exceptions/ValidationException'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class Email {
     constructor(
@@ -8,7 +9,7 @@ export class Email {
     }
 
     private validate(): void {
-        if (this.isInvalidEmail()) throw new ValidationException('invalid email')
+        if (this.isInvalidEmail()) throw new ValidationException(ValidationMessages.INVALID_EMAIL)
     }
 
     private isInvalidEmail(): boolean {
