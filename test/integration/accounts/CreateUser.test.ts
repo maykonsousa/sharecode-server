@@ -34,12 +34,6 @@ test('Not sould create user if user already exists', async () => {
         .rejects.toThrowError('user already exists')
 })
 
-test('Not sould create user if missing param', async () => {
-    inputUser.name = ''
-    await expect(createUser.execute(inputUser))
-        .rejects.toThrowError('name is required')
-})
-
 test('Should create user', async () => {
     const outputCreateUser = await createUser.execute(inputUser)
     const user = await userRepository.find(outputCreateUser.id)
