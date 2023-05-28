@@ -7,37 +7,37 @@ beforeEach(() => {
     random = randomBytes(16).toString('hex')
 })
 
-test('Not should create a new user if id is required', () => {
+test('Return exception if empy id', () => {
     expect(() => {
-        new User(
+        User.create(
             '',
             random,
             random,
-            `${random}@test.c`,
+            `${random}@test.com`,
             random
         )
     }).toThrowError('id is required')
 })
 
-test('Not should create a new user if gh_username is required', () => {
+test('Not should create a  if gh_username is required', () => {
     expect(() => {
-        new User(
+        User.create(
             random,
             '',
             random,
-            `${random}@test.c`,
+            `${random}@test.com`,
             random
         )
     }).toThrowError('gh_username is required')
 })
 
-test('Not should create a new user if name is required', () => {
+test('Not should create a user if name is required', () => {
     expect(() => {
-        new User(
+        User.create(
             random,
             random,
             '',
-            `${random}@test.c`,
+            `${random}@test.com`,
             random
         )
     }).toThrowError('name is required')
@@ -46,7 +46,7 @@ test('Not should create a new user if name is required', () => {
 test('Not should create user if invalid email', () => {
     expect(
         () =>
-            new User(
+            User.create(
                 random,
                 random,
                 random,
@@ -59,7 +59,7 @@ test('Not should create user if invalid email', () => {
 test('Not should create user if invalid password', () => {
     expect(
         () =>
-            new User(
+            User.create(
                 random,
                 random,
                 random,
@@ -70,7 +70,7 @@ test('Not should create user if invalid password', () => {
 })
 
 test('Should create user', () => {
-    const user = new User(
+    const user = User.create(
         random,
         random,
         random,
