@@ -100,5 +100,5 @@ test('Should reset password', async () => {
         password: '123456'
     })
     const user = await userRepository.find(outputCreateUser.id)
-    expect(hash.decrypt('123456', user.password.getValue())).toBeTruthy()
+    expect(hash.decrypt('123456', user.getPassword())).toBeTruthy()
 })
