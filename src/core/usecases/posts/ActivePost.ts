@@ -33,9 +33,10 @@ export class ActivePost {
         } catch (err) {
             throw new UnauthorizedError('invalid token')
         }
-        const existsToken = await this.userRepository.find(id)
-        if (!existsToken) throw new NotFoundError('user not found')
-        if (existsToken.type === 'user') throw new CustomError(403, 'not allowed')
+        const existingUser = await this.userRepository.find(id)
+        console.log(existingUser)
+        if (!existingUser) throw new NotFoundError('user not found')
+        if (existingUser.getRule() === 'user') throw new CustomError(403, 'not allowed')
         const IS_ACTIVE = true
         const post = new Post(
             existsPost.id,

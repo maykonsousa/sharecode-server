@@ -25,7 +25,7 @@ export class CreatePost {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsUser = await this.userRepository.find(input.user_id)
         if (!existsUser) throw new NotFoundError('user not found')
-        const IS_ACTIVE = existsUser.type !== 'user' || false
+        const IS_ACTIVE = existsUser.getRule() !== 'user' || false
         const IS_PRIVATE = false
         const post = new Post(
             randomUUID(),
