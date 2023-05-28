@@ -1,22 +1,21 @@
-import { CustomError } from '../../../core/exceptions/CustomError'
+import { ValidationException } from '../../exceptions/ValidationException'
 
 export class Email {
     constructor(
-        readonly value: string
+        private value: string
     ) {
         this.validate()
     }
 
-    getValue(): string {
-        return this.value
+    private validate(): void {
+        if (this.isInvalidEmail()) throw new ValidationException('invalid email')
     }
 
     private isInvalidEmail(): boolean {
         return !/^[\w+.]+@\w+\.\w{2,}(?:\.\w{2})?$/.test(this.value)
     }
 
-    private validate(): void {
-        if (!this.value) throw new CustomError(400, 'email is required')
-        if (this.isInvalidEmail()) throw new CustomError(400, 'invalid email')
+    getValue(): string {
+        return this.value
     }
 }

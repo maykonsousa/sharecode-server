@@ -2,7 +2,7 @@ import { ValidationException } from '../../exceptions/ValidationException'
 
 export class Rule {
     constructor(
-        readonly value: string
+        private value: string
     ) {
         this.validate()
     }
