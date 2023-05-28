@@ -26,29 +26,29 @@ export class ResetPassword {
 
     async execute(input: ResetPasswordInput): Promise<void> {
         this.validator.isMissingParam(this.fieldsRequired, input)
-        const existsToken = await this.tokenRepository.find(input.token)
-        if (!existsToken) throw new NotFoundError('token not found')
-        if (existsToken.type !== 'forgot_password') throw new CustomError(403, 'not allowed')
+        const existingToken = await this.tokenRepository.find(input.token)
+        if (!existingToken) throw new NotFoundError('token not found')
+        if (existingToken.type !== 'forgot_password') throw new CustomError(403, 'not allowed')
         try {
-            this.sign.decode(existsToken.token)
+            this.sign.decode(existingToken.token)
         } catch (error) {
             throw new UnauthorizedError('token is invalid or expired')
         }
-        const existsUser = await this.userRepository.find(existsToken.userId)
-        if (!existsUser) throw new NotFoundError('user not found')
-        const isPasswordMath = this.hash.decrypt(input.password, existsUser.password.getValue())
+        const existingUser = await this.userRepository.find(existingToken.userId)
+        if (!existingUser) throw new NotFoundError('user not found')
+        const isPasswordMath = this.hash.decrypt(input.password, existingUser.getPassword())
         if (isPasswordMath) throw new CustomError(400, 'password should be diff to old password')
-        const user = new User(
-            existsUser.id,
-            existsUser.gh_username,
-            existsUser.name,
-            existsUser.email.getValue(),
+        const user = User.create(
+            existingUser.id,
+            existingUser.gh_username,
+            existingUser.name,
+            existingUser.email,
             input.password
         )
-        const password = this.hash.encrypt(input.password)
-        user.password.setValue(password)
+        const encryptedPassword = this.hash.encrypt(input.password)
+        user.updateEncrypedPassword(encryptedPassword)
         await this.userRepository.update(user)
-        await this.tokenRepository.delete(existsToken.id)
+        await this.tokenRepository.delete(existingToken.id)
     }
 }
 
