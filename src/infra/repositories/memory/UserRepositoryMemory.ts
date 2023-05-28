@@ -13,7 +13,7 @@ export class UserRepositoryMemory implements UserRepository {
     }
 
     async findByEmail(email: string): Promise<User> {
-        return this.users.find((user) => user.email.getValue() === email)
+        return this.users.find((user) => user.email === email)
     }
 
     async save(user: User): Promise<void> {
