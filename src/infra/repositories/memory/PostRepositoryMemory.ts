@@ -1,5 +1,5 @@
-import { Post } from '../../../domain/entities/Post'
-import { PostRepository } from '../../../domain/repositories/PostRepository'
+import { Post } from '../../../core/domain/Post'
+import { PostRepository } from '../../../core/domain/PostRepository'
 
 export class PostRepositoryMemory implements PostRepository {
     posts: Post[] = []

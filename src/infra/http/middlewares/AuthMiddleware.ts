@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { CustomError } from '../../../application/exceptions/CustomError'
+import { CustomError } from '../../../core/exceptions/CustomError'
 import { JSONWebToken } from '../../adapters/JSONWebToken'
 
 export default (req: Request, res: Response, next: NextFunction) => {

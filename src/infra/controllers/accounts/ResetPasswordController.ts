@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { ResetPassword } from '../../../application/usecases/accounts/ResetPassword'
+import { ResetPassword } from '../../../core/usecases/accounts/ResetPassword'
 
 
 export class ResetPasswordController {

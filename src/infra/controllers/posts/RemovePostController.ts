@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { RemovePost } from '../../../application/usecases/posts/RemovePost'
+import { RemovePost } from '../../../core/usecases/posts/RemovePost'
 
 export class RemovePostController {
     constructor(

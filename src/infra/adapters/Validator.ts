@@ -1,4 +1,4 @@
-import { MissingParamError } from '../../application/exceptions/MissingParamError'
+import { MissingParamError } from '../../core/exceptions/MissingParamError'
 
 export class Validator {
     isMissingParam(fieldsRequired: string[], input: any): MissingParamError {

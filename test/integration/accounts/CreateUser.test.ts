@@ -1,6 +1,6 @@
 import { randomBytes } from 'crypto'
-import { CreateUser, CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser'
-import { UserRepository } from '../../../src/domain/repositories/UserRepository'
+import { UserRepository } from '../../../src/core/domain/UserRepository'
+import { CreateUser, CreateUserInput } from '../../../src/core/usecases/accounts/CreateUser'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'

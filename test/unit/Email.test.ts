@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto'
-import { Email } from '../../src/domain/entities/value-objects/Email'
+import { Email } from '../../src/core/domain/value-objects/Email'
 
 test('Not create email if is required', () => {
     expect(() => new Email('')).toThrowError('email is required')

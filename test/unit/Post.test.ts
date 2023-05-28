@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Post } from '../../src/domain/entities/Post'
+import { Post } from '../../src/core/domain/Post'
 
 test('Should create post', () => {
     const post = new Post(

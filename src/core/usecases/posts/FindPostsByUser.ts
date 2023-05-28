@@ -1,6 +1,6 @@
 import 'dotenv/config'
-import { PostRepository } from '../../../domain/repositories/PostRepository'
-import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { PostRepository } from '../../../core/domain/PostRepository'
+import { UserRepository } from '../../../core/domain/UserRepository'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'

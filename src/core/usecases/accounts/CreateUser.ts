@@ -1,6 +1,6 @@
 import { randomUUID } from 'crypto'
-import { User } from '../../../domain/entities/User'
-import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { User } from '../../../core/domain/User'
+import { UserRepository } from '../../../core/domain/UserRepository'
 import { Hash } from '../../../infra/adapters/Hash'
 import { Queue } from '../../../infra/queue/Queue'
 import { CustomError } from '../../exceptions/CustomError'

@@ -1,6 +1,6 @@
-import { CustomError } from '../../../application/exceptions/CustomError'
-import { Token } from '../../../domain/entities/Token'
-import { TokenRepository } from '../../../domain/repositories/TokenRepository'
+import { Token } from '../../../core/domain/Token'
+import { CustomError } from '../../../core/exceptions/CustomError'
+import { TokenRepository } from '../../../core/domain/TokenRepository'
 
 export class TokenRepositoryMemory implements TokenRepository {
     tokens: Token[] = []

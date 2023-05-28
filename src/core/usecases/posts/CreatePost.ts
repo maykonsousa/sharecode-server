@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
-import { Post } from '../../../domain/entities/Post'
-import { PostRepository } from '../../../domain/repositories/PostRepository'
-import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { Post } from '../../../core/domain/Post'
+import { PostRepository } from '../../../core/domain/PostRepository'
+import { UserRepository } from '../../../core/domain/UserRepository'
 import { Validator } from '../../../infra/adapters/Validator'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 

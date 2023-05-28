@@ -1,5 +1,5 @@
 import { randomUUID } from 'crypto'
-import { Token } from '../../src/domain/entities/Token'
+import { Token } from '../../src/core/domain/Token'
 
 test('Not should create token if expired token', () => {
     const expiredToken = new Date()

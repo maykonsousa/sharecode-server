@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { FindPosts } from '../../../application/usecases/posts/FindPosts'
+import { FindPosts } from '../../../core/usecases/posts/FindPosts'
 
 export class FindPostsController {
     constructor(

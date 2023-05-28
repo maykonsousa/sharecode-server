@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express'
-import { AuthenticateUserGitHub } from '../../../application/usecases/accounts/AuthenticateUserGitHub'
-import { GetUserGitHub } from '../../../application/usecases/accounts/GetUserGitHub'
+import { AuthenticateUserGitHub } from '../../../core/usecases/accounts/AuthenticateUserGitHub'
+import { GetUserGitHub } from '../../../core/usecases/accounts/GetUserGitHub'
 
 export class AuthenticateUserGitHubController {
     constructor(

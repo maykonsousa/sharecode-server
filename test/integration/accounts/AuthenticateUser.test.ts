@@ -1,6 +1,6 @@
 import 'dotenv/config'
-import { AuthenticateUser, AuthenticateUserInput } from '../../../src/application/usecases/accounts/AuthenticateUser'
-import { CreateUser, CreateUserInput } from '../../../src/application/usecases/accounts/CreateUser'
+import { AuthenticateUser, AuthenticateUserInput } from '../../../src/core/usecases/accounts/AuthenticateUser'
+import { CreateUser, CreateUserInput } from '../../../src/core/usecases/accounts/CreateUser'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Queue } from '../../../src/infra/queue/Queue'

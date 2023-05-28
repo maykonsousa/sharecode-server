@@ -1,5 +1,5 @@
-import { User } from '../../../domain/entities/User'
-import { UserRepository } from '../../../domain/repositories/UserRepository'
+import { User } from '../../../core/domain/User'
+import { UserRepository } from '../../../core/domain/UserRepository'
 import { PrismaDBAdapter } from '../../database/PrismaDBAdapter'
 
 export class UserRepositoryPrisma implements UserRepository {

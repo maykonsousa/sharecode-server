@@ -1,4 +1,4 @@
-import { Post } from '../../domain/entities/Post'
+import { Post } from '../../core/domain/Post'
 
 export interface PostRepository {
     save(post: Post): Promise<void>

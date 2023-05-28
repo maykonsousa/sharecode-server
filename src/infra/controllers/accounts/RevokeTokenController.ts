@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
-import { RevokeToken } from '../../../application/usecases/accounts/RevokeToken'
+import { RevokeToken } from '../../../core/usecases/accounts/RevokeToken'
 
 
 export class RevokeTokenController {

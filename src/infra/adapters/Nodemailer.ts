@@ -1,5 +1,5 @@
 import nodemailer, { Transporter } from 'nodemailer'
-import { Message } from '../../domain/entities/Message'
+import { Message } from '../../core/domain/Message'
 
 import { Mail } from './Mail'
 

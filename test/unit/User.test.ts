@@ -1,5 +1,5 @@
 import { randomBytes } from 'crypto'
-import { User } from '../../src/domain/entities/User'
+import { User } from '../../src/core/domain/User'
 
 let random: string
 

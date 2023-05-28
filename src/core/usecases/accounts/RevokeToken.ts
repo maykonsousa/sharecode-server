@@ -1,5 +1,5 @@
-import { Token } from '../../../domain/entities/Token'
-import { TokenRepository } from '../../../domain/repositories/TokenRepository'
+import { Token } from '../../../core/domain/Token'
+import { TokenRepository } from '../../../core/domain/TokenRepository'
 import { Sign } from '../../../infra/adapters/Sign'
 import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'

@@ -1,12 +1,14 @@
-import { PostRepository } from '../../../domain/repositories/PostRepository'
-import { UserRepository } from '../../../domain/repositories/UserRepository'
+import 'dotenv/config'
+import { PostRepository } from '../../../core/domain/PostRepository'
+import { UserRepository } from '../../../core/domain/UserRepository'
 import { Pagination } from '../../../infra/adapters/Pagination'
 import { Sign } from '../../../infra/adapters/Sign'
+import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
-export class FindPublicPosts {
+export class FindPosts {
     constructor(
         readonly postRepository: PostRepository,
         readonly userRepository: UserRepository,
@@ -14,7 +16,7 @@ export class FindPublicPosts {
         readonly pagination: Pagination
     ) { }
 
-    async execute(input: FindPublicPostsInput): Promise<FindPublicPostsOutput[]> {
+    async execute(input: FindPostsInput): Promise<FindPostsOutput[]> {
         if (!input.token) throw new MissingParamError('token is required')
         let id = null
         try {
@@ -24,31 +26,30 @@ export class FindPublicPosts {
         }
         const existsUser = await this.userRepository.find(id)
         if (!existsUser) throw new NotFoundError('user not found')
-        const posts = await this.postRepository.findPublicPosts()
-        const output: FindPublicPostsOutput[] = []
+        if (existsUser.type === 'user') throw new CustomError(403, 'not allowed')
+        const posts = await this.postRepository.findAll()
+        const output: FindPostsOutput[] = []
         for (const post of posts) {
-            output.push(
-                {
-                    id: post.id,
-                    title: post.title,
-                    description: post.description,
-                    user_id: post.user_id,
-                    isActive: post.is_active,
-                    isPrivate: post.is_private
-                }
-            )
+            output.push({
+                id: post.id,
+                title: post.title,
+                description: post.description,
+                user_id: post.user_id,
+                isActive: post.is_active,
+                isPrivate: post.is_private
+            })
         }
         return this.pagination.execute(output, input.page, input.limit)
     }
 }
 
-type FindPublicPostsInput = {
+type FindPostsInput = {
     page?: number
     limit?: number
     token: string
 }
 
-type FindPublicPostsOutput = {
+type FindPostsOutput = {
     id: string
     title: string
     description: string

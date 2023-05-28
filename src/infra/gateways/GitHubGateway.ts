@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { CustomError } from '../../application/exceptions/CustomError'
+import { CustomError } from '../../core/exceptions/CustomError'
 
 export class GitHubGateway {
     async newAccessToken(code: string): Promise<string> {
@@ -8,7 +8,7 @@ export class GitHubGateway {
                 method: 'POST',
                 url: 'https://github.com/login/oauth/access_token',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'core/json'
                 },
                 data: {
                     client_id: process.env.CLIENT_ID,
@@ -31,7 +31,7 @@ export class GitHubGateway {
                 url: 'https://api.github.com/user',
                 headers: {
                     'Authorization': `Bearer ${access_token}`,
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'core/json'
                 }
             })
             return response.data

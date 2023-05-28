@@ -1,4 +1,4 @@
-import { Password } from '../../src/domain/entities/value-objects/Password'
+import { Password } from '../../src/core/domain/value-objects/Password'
 
 test('Should create password', () => {
     const password = new Password('123456')
