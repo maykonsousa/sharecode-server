@@ -5,7 +5,6 @@ import { Password } from './value-objects/Password'
 import { Rule } from './value-objects/Rule'
 
 export class User {
-
     private constructor(
         readonly id: string,
         readonly gh_username: string,
@@ -57,8 +56,6 @@ export class User {
             rule
         )
     }
-
- 
 
     updateRule(rule: string): void {
         this.rule = new Rule(rule).getValue()
