@@ -5,8 +5,10 @@ import { Hash } from '../../../infra/adapters/Hash'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
+import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class ResetPassword {
     readonly fieldsRequired: string[]
@@ -25,7 +27,8 @@ export class ResetPassword {
     }
 
     async execute(input: ResetPasswordInput): Promise<void> {
-        this.validator.isMissingParam(this.fieldsRequired, input)
+        if (!input.token) new MissingParamError(ValidationMessages.EMPTY_ACCESS_TOKEN)
+        if (!input.password) throw new MissingParamError(ValidationMessages.EMPTY_PASSWORD)
         const existingToken = await this.tokenRepository.find(input.token)
         if (!existingToken) throw new NotFoundError('token not found')
         if (existingToken.type !== 'forgot_password') throw new CustomError(403, 'not allowed')
