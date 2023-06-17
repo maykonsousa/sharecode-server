@@ -3,7 +3,6 @@ import { User } from '../../../core/domain/User'
 import { UserRepository } from '../../../core/domain/UserRepository'
 import { Hash } from '../../../infra/adapters/Hash'
 import { Sign } from '../../../infra/adapters/Sign'
-import { Validator } from '../../../infra/adapters/Validator'
 import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
@@ -11,20 +10,12 @@ import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class ResetPassword {
-    readonly fieldsRequired: string[]
-
     constructor(
         readonly userRepository: UserRepository,
         readonly tokenRepository: TokenRepository,
         readonly hash: Hash,
         readonly sign: Sign,
-        readonly validator: Validator
-    ) { 
-        this.fieldsRequired = [
-            'token',
-            'password'
-        ]
-    }
+    ) { }
 
     async execute(input: ResetPasswordInput): Promise<void> {
         if (!input.token) new MissingParamError(ValidationMessages.EMPTY_ACCESS_TOKEN)

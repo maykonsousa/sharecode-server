@@ -9,7 +9,6 @@ import { ResetPassword } from '../../../src/core/usecases/accounts/ResetPassword
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { JSONWebToken } from '../../../src/infra/adapters/JSONWebToken'
 import { Sign } from '../../../src/infra/adapters/Sign'
-import { Validator } from '../../../src/infra/adapters/Validator'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
@@ -18,7 +17,6 @@ let userRepository: UserRepository
 let tokenRepository: TokenRepository
 let hash: Bcrypt
 let sign: Sign
-let validator: Validator
 let inputUser: any
 
 const mockedQueue: Queue = {
@@ -32,7 +30,6 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     sign = new JSONWebToken()
-    validator = new Validator()
     inputUser = { 
         gh_username: UserDefaults.DEFAULT_USER_USERNAME,
         name: UserDefaults.DEFAULT_USER_NAME,
@@ -43,7 +40,7 @@ beforeEach(async () => {
 })
 
 test('Not should reset password if token not found', async () => {
-    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     await expect(resetPassword.execute({
         token: '123456',
         password: inputUser.password
@@ -55,7 +52,7 @@ test('Not should reset password if not allowed', async () => {
     await createUser.execute(inputUser)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     await authenticateUser.execute(inputUser)
-    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     const [token] = await tokenRepository.findAll()
     await expect(resetPassword.execute({
         token: token.id,
@@ -68,7 +65,7 @@ test('Not should reset password if user not found', async () => {
     await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)
-    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     await userRepository.clean()
     await expect(resetPassword.execute({
         token: outputForgotPassword.token,
@@ -81,7 +78,7 @@ test('Not should reset password if password should be diff to old password', asy
     await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)
-    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     await expect(resetPassword.execute({
         token: outputForgotPassword.token,
         password: inputUser.password
@@ -93,7 +90,7 @@ test('Should reset password', async () => {
     const outputCreateUser = await createUser.execute(inputUser)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, mockedQueue)
     const outputForgotPassword = await forgotPassword.execute(inputUser.email)
-    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     await resetPassword.execute({
         token: outputForgotPassword.token,
         password: '@P4ssw0rd'
