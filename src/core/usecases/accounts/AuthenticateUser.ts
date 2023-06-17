@@ -3,11 +3,11 @@ import { CurrentDate } from '../../../core/domain/CurrentDate'
 import { Token } from '../../../core/domain/Token'
 import { TokenRepository } from '../../../core/domain/TokenRepository'
 import { UserRepository } from '../../../core/domain/UserRepository'
-import { Email } from '../../../core/domain/value-objects/Email'
-import { Password } from '../../../core/domain/value-objects/Password'
 import { Hash } from '../../../infra/adapters/Hash'
 import { Sign } from '../../../infra/adapters/Sign'
+import { MissingParamError } from '../../exceptions/MissingParamError'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class AuthenticateUser {
     constructor(
@@ -18,12 +18,12 @@ export class AuthenticateUser {
     ) { }
 
     async execute(input: AuthenticateUserInput): Promise<AuthenticateUserOutput> {
-        this.validate(input)
+        if (!input.email) throw new MissingParamError(ValidationMessages.EMPTY_EMAIL)
+        if (!input.password) throw new MissingParamError(ValidationMessages.EMPTY_PASSWORD)
         const existingUser = await this.userRepository.findByEmail(input.email)
         if (!existingUser) throw new UnauthorizedError('invalid login')
-        const password = new Password(input.password)
-        const isPasswordMath = this.hash.decrypt(password.getValue(), existingUser.getPassword())
-        if (!isPasswordMath) throw new UnauthorizedError('invalid login')
+        const isPasswordMatch = this.hash.decrypt(input.password, existingUser.getPassword())
+        if (!isPasswordMatch) throw new UnauthorizedError('invalid login')
         const encodedToken = this.sign.encode({
             id: existingUser.id,
             type: existingUser.getRule()
@@ -42,13 +42,6 @@ export class AuthenticateUser {
             token: encodedToken,
             refreshToken: token.id
         }
-    }
-
-    private validate(input: AuthenticateUserInput): void {
-        if (!input.email) throw new Error('email is required')
-        if (!input.password) throw new Error('password is required')
-        new Email(input.email)
-        new Password(input.password)
     }
 }
 
