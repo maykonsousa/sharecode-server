@@ -1,7 +1,7 @@
-import { randomBytes } from 'crypto'
 import 'dotenv/config'
 import { TokenRepository } from '../../../src/core/domain/TokenRepository'
 import { UserRepository } from '../../../src/core/domain/UserRepository'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { AuthenticateUser } from '../../../src/core/usecases/accounts/AuthenticateUser'
 import { CreateUser } from '../../../src/core/usecases/accounts/CreateUser'
 import { ForgotPassword } from '../../../src/core/usecases/accounts/ForgotPassword'
@@ -33,12 +33,11 @@ beforeEach(async () => {
     hash = new Bcrypt()
     sign = new JSONWebToken()
     validator = new Validator()
-    const random = randomBytes(16).toString('hex')
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    inputUser = { 
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     await userRepository.clean()
 })
@@ -47,7 +46,7 @@ test('Not should reset password if token not found', async () => {
     const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
     await expect(resetPassword.execute({
         token: '123456',
-        password: '123456'
+        password: inputUser.password
     })).rejects.toThrowError('token not found')
 })
 
@@ -60,7 +59,7 @@ test('Not should reset password if not allowed', async () => {
     const [token] = await tokenRepository.findAll()
     await expect(resetPassword.execute({
         token: token.id,
-        password: '123456'
+        password: inputUser.password
     })).rejects.toThrowError('not allowed')
 })
 
@@ -73,7 +72,7 @@ test('Not should reset password if user not found', async () => {
     await userRepository.clean()
     await expect(resetPassword.execute({
         token: outputForgotPassword.token,
-        password: '123456'
+        password: inputUser.password
     })).rejects.toThrowError('user not found')
 })
 
@@ -97,8 +96,8 @@ test('Should reset password', async () => {
     const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
     await resetPassword.execute({
         token: outputForgotPassword.token,
-        password: '123456'
+        password: '@P4ssw0rd'
     })
     const user = await userRepository.find(outputCreateUser.id)
-    expect(hash.decrypt('123456', user.getPassword())).toBeTruthy()
+    expect(hash.decrypt('@P4ssw0rd', user.getPassword())).toBeTruthy()
 })

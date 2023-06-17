@@ -1,7 +1,7 @@
-import { randomBytes } from 'crypto'
 import 'dotenv/config'
 import { TokenRepository } from '../../../src/core/domain/TokenRepository'
 import { UserRepository } from '../../../src/core/domain/UserRepository'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { CreateUser, CreateUserInput } from '../../../src/core/usecases/accounts/CreateUser'
 import { ForgotPassword } from '../../../src/core/usecases/accounts/ForgotPassword'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
@@ -26,12 +26,11 @@ beforeEach(async () => {
     tokenRepository = new TokenRepositoryMemory()
     hash = new Bcrypt()
     const sign = new JSONWebToken()
-    const random = randomBytes(16).toString('hex')
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    inputUser = { 
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, queue)
     await userRepository.clean()

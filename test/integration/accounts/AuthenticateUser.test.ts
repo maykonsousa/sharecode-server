@@ -1,4 +1,5 @@
 import 'dotenv/config'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { AuthenticateUser, AuthenticateUserInput } from '../../../src/core/usecases/accounts/AuthenticateUser'
 import { CreateUser, CreateUserInput } from '../../../src/core/usecases/accounts/CreateUser'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
@@ -9,6 +10,7 @@ import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/Use
 
 let createUser: CreateUser
 let authenticateUser: AuthenticateUser
+let inputCreateUser: CreateUserInput
 
 beforeEach(async () => {
     const userRepository = new UserRepositoryMemory()
@@ -20,6 +22,12 @@ beforeEach(async () => {
         connect: jest.fn(),
         close: jest.fn()
     }
+    inputCreateUser = {
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
+    }
     createUser = new CreateUser(userRepository, hash, queue)
     authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     await userRepository.clean()
@@ -28,7 +36,7 @@ beforeEach(async () => {
 test('Not should authenticate user if email is required', async () => {
     const inputAuthenticateUser: AuthenticateUserInput = {
         email: '',
-        password: '123456',
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('email is required')
 })
@@ -44,33 +52,21 @@ test('Not should authenticate user if password is required', async () => {
 test('Should return a invalid login if email is invalid', async () => {
     const inputAuthenticateUser: AuthenticateUserInput = {
         email: 'cont.juliano@outlook.com',
-        password: '123456',
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('invalid login')
 })
 
 test('Should return a invalid login if password is invalid', async () => {
-    const inputCreateUser:CreateUserInput = {
-        name: 'Juliano',
-        gh_username: 'julianojj',
-        email: 'cont.juliano@outlook.com',
-        password: '123456'
-    }
     await createUser.execute(inputCreateUser)
     const inputAuthenticateUser: AuthenticateUserInput = {
         email: inputCreateUser.email,
-        password: '1234567',
+        password: '@P4ssw0rd',
     }
     expect(() => authenticateUser.execute(inputAuthenticateUser)).rejects.toThrowError('invalid login')
 })
 
 test('Should authenticate user', async () => {
-    const inputCreateUser:CreateUserInput = {
-        name: 'Juliano',
-        gh_username: 'julianojj',
-        email: 'cont.juliano@outlook.com',
-        password: '123456'
-    }
     await createUser.execute(inputCreateUser)
     const inputAuthenticateUser: AuthenticateUserInput = {
         email: inputCreateUser.email,
