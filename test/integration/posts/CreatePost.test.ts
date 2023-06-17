@@ -1,6 +1,7 @@
 import { randomBytes } from 'crypto'
 import { PostRepository } from '../../../src/core/domain/PostRepository'
 import { UserRepository } from '../../../src/core/domain/UserRepository'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { CreateUser } from '../../../src/core/usecases/accounts/CreateUser'
 import { CreatePost } from '../../../src/core/usecases/posts/CreatePost'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
@@ -28,11 +29,11 @@ beforeEach(async () => {
     hash = new Bcrypt()
     validator = new Validator()
     const random = randomBytes(16).toString('hex')
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    inputUser = { 
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     inputPost = {
         title: random,

@@ -3,6 +3,7 @@ import 'dotenv/config'
 import { PostRepository } from '../../../src/core/domain/PostRepository'
 import { TokenRepository } from '../../../src/core/domain/TokenRepository'
 import { UserRepository } from '../../../src/core/domain/UserRepository'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { AuthenticateUser } from '../../../src/core/usecases/accounts/AuthenticateUser'
 import { CreateUser } from '../../../src/core/usecases/accounts/CreateUser'
 import { SetUserType } from '../../../src/core/usecases/accounts/SetUserType'
@@ -43,11 +44,11 @@ beforeEach(async () => {
     validator = new Validator()
     pagination = new Pagination()
     const random = randomBytes(16).toString('hex')
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    inputUser = { 
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     inputPost = {
         title: random,

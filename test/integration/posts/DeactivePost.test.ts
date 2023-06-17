@@ -16,6 +16,7 @@ import { Queue } from '../../../src/infra/queue/Queue'
 import { PostRepositoryMemory } from '../../../src/infra/repositories/memory/PostRepositoryMemory'
 import { TokenRepositoryMemory } from '../../../src/infra/repositories/memory/TokenRepositoryMemory'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 
 let userRepository: UserRepository
 let tokenRepository: TokenRepository
@@ -40,11 +41,11 @@ beforeEach(async () => {
     sign = new JSONWebToken()
     validator = new Validator()
     const random = randomBytes(16).toString('hex')
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    inputUser = { 
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     inputPost = {
         title: random,
