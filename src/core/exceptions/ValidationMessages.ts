@@ -7,4 +7,5 @@ export class ValidationMessages {
     public static readonly INVALID_RULE = 'invalid rule'
     public static readonly EMPTY_EMAIL = 'email is required'
     public static readonly EMPTY_PASSWORD = 'password is required'
+    public static readonly INVALID_LOGIN = 'invalid login'
 }

@@ -21,9 +21,9 @@ export class AuthenticateUser {
         if (!input.email) throw new MissingParamError(ValidationMessages.EMPTY_EMAIL)
         if (!input.password) throw new MissingParamError(ValidationMessages.EMPTY_PASSWORD)
         const existingUser = await this.userRepository.findByEmail(input.email)
-        if (!existingUser) throw new UnauthorizedError('invalid login')
+        if (!existingUser) throw new UnauthorizedError(ValidationMessages.INVALID_LOGIN)
         const isPasswordMatch = this.hash.decrypt(input.password, existingUser.getPassword())
-        if (!isPasswordMatch) throw new UnauthorizedError('invalid login')
+        if (!isPasswordMatch) throw new UnauthorizedError(ValidationMessages.INVALID_LOGIN)
         const encodedToken = this.sign.encode({
             id: existingUser.id,
             type: existingUser.getRule()
