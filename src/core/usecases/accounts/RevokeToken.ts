@@ -1,9 +1,10 @@
 import { Token } from '../../../core/domain/Token'
 import { TokenRepository } from '../../../core/domain/TokenRepository'
 import { Sign } from '../../../infra/adapters/Sign'
-import { CustomError } from '../../exceptions/CustomError'
 import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
+import { ValidationException } from '../../exceptions/ValidationException'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class RevokeToken {
     constructor(
@@ -11,11 +12,11 @@ export class RevokeToken {
         readonly sign: Sign
     ) { }
 
-    async execute(id: string): Promise<RevokeTokenOutput> {
-        if (!id) throw new MissingParamError('id is required')
-        const existsToken = await this.tokenRepository.find(id)
-        if (!existsToken) throw new NotFoundError('token not found')
-        if (existsToken.isRevoked) throw new CustomError(422, 'token already revoked')
+    async execute(refreshTokenId: string): Promise<RevokeTokenOutput> {
+        if (!refreshTokenId) throw new MissingParamError(ValidationMessages.EMPTY_REFRESH_TOKEN)
+        const existsToken = await this.tokenRepository.find(refreshTokenId)
+        if (!existsToken) throw new NotFoundError(ValidationMessages.TOKEN_NOT_FOUND)
+        if (existsToken.isRevoked) throw new ValidationException(ValidationMessages.TOKEN_ALREADY_REVOKED)
         const encryptedToken = this.sign.encode({
             id: existsToken.userId,
             type: existsToken.type

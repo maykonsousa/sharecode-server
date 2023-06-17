@@ -40,7 +40,7 @@ beforeEach(async () => {
 
 test('Not should revoke token if missing param', async () => {
     const revokeToken = new RevokeToken(tokenRepository, sign)
-    await expect(revokeToken.execute('')).rejects.toThrowError('id is required')
+    await expect(revokeToken.execute('')).rejects.toThrowError('refresh token is required')
 })
 
 test('Not should revoke token if token not found', async () => {

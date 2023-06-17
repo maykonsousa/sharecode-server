@@ -9,4 +9,7 @@ export class ValidationMessages {
     public static readonly EMPTY_PASSWORD = 'password is required'
     public static readonly INVALID_LOGIN = 'invalid login'
     public static readonly EMPTY_ACCESS_TOKEN = 'access token is required'
+    public static readonly EMPTY_REFRESH_TOKEN = 'refresh token is required'
+    public static readonly TOKEN_NOT_FOUND = 'token not found'
+    public static readonly TOKEN_ALREADY_REVOKED = 'token already revoked'
 }
