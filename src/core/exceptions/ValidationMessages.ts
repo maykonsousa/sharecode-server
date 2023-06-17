@@ -12,4 +12,6 @@ export class ValidationMessages {
     public static readonly EMPTY_REFRESH_TOKEN = 'refresh token is required'
     public static readonly TOKEN_NOT_FOUND = 'token not found'
     public static readonly TOKEN_ALREADY_REVOKED = 'token already revoked'
+    public static readonly REQUIRED_USER_ID = 'id is required'
+    public static readonly REQUIRED_RULE = 'rule'
 }
