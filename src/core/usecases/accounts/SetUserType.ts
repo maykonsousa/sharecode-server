@@ -1,6 +1,7 @@
 import { User } from '../../../core/domain/User'
 import { UserRepository } from '../../../core/domain/UserRepository'
 import { Validator } from '../../../infra/adapters/Validator'
+import { Rule } from '../../domain/value-objects/Rule'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 
 export class SetUserType {
@@ -20,14 +21,15 @@ export class SetUserType {
         this.validator.isMissingParam(this.fieldsRequired, input)
         const existsUser = await this.userRepository.find(input.id)
         if (!existsUser) throw new NotFoundError('user not found')
-        const user = User.create(
+        const rule = new Rule(input.rule).getValue()
+        const user = User.buildExistingUser(
             existsUser.id,
             existsUser.gh_username,
             existsUser.name,
             existsUser.email,
-            existsUser.getPassword()
+            existsUser.getPassword(),
+            rule
         )
-        user.updateRule(input.rule)
         await this.userRepository.update(user)
     }
 }
