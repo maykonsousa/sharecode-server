@@ -6,6 +6,7 @@ import { UserRepository } from '../../../core/domain/UserRepository'
 import { Sign } from '../../../infra/adapters/Sign'
 import { Queue } from '../../../infra/queue/Queue'
 import { MissingParamError } from '../../exceptions/MissingParamError'
+import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class ForgotPassword {
     constructor(
@@ -16,7 +17,7 @@ export class ForgotPassword {
     ) { }
 
     async execute(email: string): Promise<ForgotPasswordOutput> {
-        if (!email) throw new MissingParamError('email is required')
+        if (!email) throw new MissingParamError(ValidationMessages.EMPTY_EMAIL)
         const existingUser = await this.userRepository.findByEmail(email)
         if (!existingUser) return
         const encodedToken = this.sign.encode({ id: existingUser.id, type: existingUser.getRule() }, '15m')
