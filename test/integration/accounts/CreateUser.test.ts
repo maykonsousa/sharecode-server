@@ -1,5 +1,5 @@
-import { randomBytes } from 'crypto'
 import { UserRepository } from '../../../src/core/domain/UserRepository'
+import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { CreateUser, CreateUserInput } from '../../../src/core/usecases/accounts/CreateUser'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
 import { Queue } from '../../../src/infra/queue/Queue'
@@ -12,17 +12,16 @@ let userRepository: UserRepository
 beforeEach(async () => {
     userRepository = new UserRepositoryMemory()
     const hash = new Bcrypt()
-    const random = randomBytes(16).toString('hex')
     const queue: Queue = {
         publish: jest.fn(),
         connect: jest.fn(),
         close: jest.fn()
     }
-    inputUser = {
-        gh_username: random,
-        name: random,
-        email: `${random}@test.com`,
-        password: random
+    inputUser = { 
+        gh_username: UserDefaults.DEFAULT_USER_USERNAME,
+        name: UserDefaults.DEFAULT_USER_NAME,
+        email: UserDefaults.DEFAULT_USER_EMAIL,
+        password: UserDefaults.DEFAULT_USER_PASSWORD,
     }
     createUser = new CreateUser(userRepository, hash, queue)
     await userRepository.clean()
