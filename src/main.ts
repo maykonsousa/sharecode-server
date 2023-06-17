@@ -3,6 +3,7 @@ import { CustomError } from './core/exceptions/CustomError'
 import { MissingParamError } from './core/exceptions/MissingParamError'
 import { NotFoundError } from './core/exceptions/NotFoundError'
 import { UnauthorizedError } from './core/exceptions/UnauthorizedError'
+import { ValidationException } from './core/exceptions/ValidationException'
 import { AuthenticateUser } from './core/usecases/accounts/AuthenticateUser'
 import { AuthenticateUserGitHub } from './core/usecases/accounts/AuthenticateUserGitHub'
 import { CreateUser } from './core/usecases/accounts/CreateUser'
@@ -137,7 +138,8 @@ const init = async () => {
             & CustomError
             & MissingParamError
             & NotFoundError
-            & UnauthorizedError,
+            & UnauthorizedError
+            & ValidationException,
         req: Request,
         res: Response,
         next: NextFunction
