@@ -13,10 +13,9 @@ export class Password {
         if (this.isInvalidPassword()) throw new ValidationException(ValidationMessages.INVALID_PASSWORD)
     }
 
-    private isInvalidPassword(): boolean {
-        return this.value.length < 6
+    private isInvalidPassword (): boolean {
+        return !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(this.value)
     }
-
     getValue(): string {
         return this.value
     }
