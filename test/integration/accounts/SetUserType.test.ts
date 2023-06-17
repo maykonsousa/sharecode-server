@@ -4,13 +4,11 @@ import { UserDefaults } from '../../../src/core/domain/defaults/UserDefaults'
 import { CreateUser } from '../../../src/core/usecases/accounts/CreateUser'
 import { SetUserType } from '../../../src/core/usecases/accounts/SetUserType'
 import { Bcrypt } from '../../../src/infra/adapters/Bcrypt'
-import { Validator } from '../../../src/infra/adapters/Validator'
 import { Queue } from '../../../src/infra/queue/Queue'
 import { UserRepositoryMemory } from '../../../src/infra/repositories/memory/UserRepositoryMemory'
 
 let userRepository: UserRepository
 let hash: Bcrypt
-let validator: Validator
 let inputUser: any
 
 const mockedQueue: Queue = {
@@ -22,7 +20,6 @@ const mockedQueue: Queue = {
 beforeEach(async () => {
     userRepository = new UserRepositoryMemory()
     hash = new Bcrypt()
-    validator = new Validator()
     inputUser = { 
         gh_username: UserDefaults.DEFAULT_USER_USERNAME,
         name: UserDefaults.DEFAULT_USER_NAME,
@@ -33,7 +30,7 @@ beforeEach(async () => {
 })
 
 test('Not should set rule admin if user not found', async () => {
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await expect(setUserType.execute({
         id: '1234',
         rule: 'admin'
@@ -43,7 +40,7 @@ test('Not should set rule admin if user not found', async () => {
 test('Should set rule admin', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'

@@ -66,7 +66,7 @@ const init = async () => {
     // usecases
     const createUser = new CreateUser(userRepository, hash, queue)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, queue)
-    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign, validator)
+    const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     const getUserGitHub = new GetUserGitHub(gitHubGateway)
     const authenticateUser = new AuthenticateUser(userRepository, tokenRepository, hash, sign)
     const authenticateUserGitHub = new AuthenticateUserGitHub(gitHubGateway)

@@ -113,7 +113,7 @@ test('Should remove post by user', async () => {
 test('Should remove post by admin', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'

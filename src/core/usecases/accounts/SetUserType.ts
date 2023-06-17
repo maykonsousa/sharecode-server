@@ -1,17 +1,13 @@
 import { User } from '../../../core/domain/User'
 import { UserRepository } from '../../../core/domain/UserRepository'
-import { Validator } from '../../../infra/adapters/Validator'
 import { Rule } from '../../domain/value-objects/Rule'
 import { MissingParamError } from '../../exceptions/MissingParamError'
 import { NotFoundError } from '../../exceptions/NotFoundError'
 import { ValidationMessages } from '../../exceptions/ValidationMessages'
 
 export class SetUserType {
-    readonly fieldsRequired: string[]
-
     constructor(
-        readonly userRepository: UserRepository,
-        readonly validator: Validator
+        readonly userRepository: UserRepository
     ) { }
 
     async execute(input: SetUserTypeInput): Promise<void> {

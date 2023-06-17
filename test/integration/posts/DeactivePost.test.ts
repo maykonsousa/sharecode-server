@@ -84,7 +84,7 @@ test('Not should deactive post if invalid token', async () => {
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
     inputPost.user_id = outputCreateUser.id
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
@@ -101,7 +101,7 @@ test('Not should deactive post if user not found', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
@@ -122,7 +122,7 @@ test('Not should deactive post if not allowed', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
@@ -146,7 +146,7 @@ test('Should deactive post', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
     const createPost = new CreatePost(postRepository, userRepository, validator)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'

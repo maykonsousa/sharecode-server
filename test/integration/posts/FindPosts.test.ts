@@ -62,7 +62,7 @@ beforeEach(async () => {
 test('Not should find posts if missing param', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
@@ -79,7 +79,7 @@ test('Not should find posts if missing param', async () => {
 test('Not should find posts if invalid token', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
@@ -96,7 +96,7 @@ test('Not should find posts if invalid token', async () => {
 test('Not should find posts if user not found', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
@@ -130,7 +130,7 @@ test('Not should find posts if not allowed', async () => {
 test('Should find posts', async () => {
     const createUser = new CreateUser(userRepository, hash, mockedQueue)
     const outputCreateUser = await createUser.execute(inputUser)
-    const setUserType = new SetUserType(userRepository, validator)
+    const setUserType = new SetUserType(userRepository)
     await setUserType.execute({
         id: outputCreateUser.id,
         rule: 'admin'
