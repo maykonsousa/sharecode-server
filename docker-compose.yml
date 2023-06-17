@@ -13,6 +13,7 @@ services:
       - RABBITMQ_HOST=queue
       - RABBITMQ_USER=${RABBITMQ_DEFAULT_USER}
       - RABBITMQ_PASS=${RABBITMQ_DEFAULT_PASS}
+      - ADMIN_USER_ID=${ADMIN_USER_ID}
     ports:
       - 3000:3000
     restart: always

@@ -19,3 +19,5 @@ export JWT_KEY=a28afc6f-55b8-4546-83f1-2bf727e72539
 
 export CLIENT_ID=clientid
 export CLIENT_SECRET=clientsecret
+
+export ADMIN_USER_ID=cf4eb825-647d-4397-96de-5bf02dbcfbc9
