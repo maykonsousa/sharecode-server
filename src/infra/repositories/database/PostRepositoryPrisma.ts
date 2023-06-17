@@ -149,7 +149,7 @@ export class PostRepositoryPrisma implements PostRepository {
 
     async delete(id: string): Promise<void> {
         const connection = this.prismaClient.getConnection()
-        connection.posts.delete({
+        await connection.posts.delete({
             where: {
                 id
             }
@@ -158,6 +158,6 @@ export class PostRepositoryPrisma implements PostRepository {
 
     async clean(): Promise<void> {
         const connection = this.prismaClient.getConnection()
-        connection.posts.deleteMany({})
+        await connection.posts.deleteMany({})
     }
 }
