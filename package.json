@@ -1,6 +1,6 @@
 {
   "name": "backend",
-  "version": "1.11.0",
+  "version": "1.11.1",
   "main": "index.js",
   "author": "Maykon Sousa <maykon.sousa@hotmail.com>",
   "license": "MIT",
