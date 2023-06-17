@@ -106,8 +106,8 @@ test('Should remove post by user', async () => {
         id: outputCreatePost.id,
         token: outputAuthenticateUser.token
     })
-    const posts = await postRepository.findByUser(process.env.ADMIN_USER_ID)
-    expect(posts).toHaveLength(1)
+    const posts = await postRepository.findByUser(outputCreateUser.id)
+    expect(posts).toHaveLength(0)
 })
 
 test('Should remove post by admin', async () => {
@@ -128,6 +128,6 @@ test('Should remove post by admin', async () => {
         id: outputCreatePost.id,
         token: outputAuthenticateUser.token
     })
-    const posts = await postRepository.findByUser(process.env.ADMIN_USER_ID)
+    const posts = await postRepository.findByUser(outputCreateUser.id)
     expect(posts).toHaveLength(0)
 })
