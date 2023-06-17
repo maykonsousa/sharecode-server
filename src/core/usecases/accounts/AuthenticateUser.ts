@@ -10,8 +10,6 @@ import { Sign } from '../../../infra/adapters/Sign'
 import { UnauthorizedError } from '../../exceptions/UnauthorizedError'
 
 export class AuthenticateUser {
-    readonly fieldsRequired: string[]
-
     constructor(
         readonly userRepository: UserRepository,
         readonly tokenRepository: TokenRepository,
