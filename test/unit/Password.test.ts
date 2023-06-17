@@ -5,6 +5,6 @@ test('return exception if invalid password', () => {
 })
 
 test('new password', () => {
-    const password = new Password('123456')
-    expect(password.getValue()).toBe('123456')
+    const password = new Password('P4ssw0rd@')
+    expect(password.getValue()).toBe('P4ssw0rd@')
 })

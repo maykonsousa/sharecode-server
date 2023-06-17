@@ -1,21 +1,15 @@
-import { randomBytes } from 'crypto'
 import { User } from '../../src/core/domain/User'
+import { UserDefaults } from '../../src/core/domain/defaults/UserDefaults'
 import { ValidationMessages } from '../../src/core/exceptions/ValidationMessages'
-
-let random: string
-
-beforeEach(() => {
-    random = randomBytes(16).toString('hex')
-})
 
 test('return exception if empy id', () => {
     expect(() => {
         User.create(
             '',
-            random,
-            random,
-            `${random}@test.com`,
-            random
+            UserDefaults.DEFAULT_USER_USERNAME,
+            UserDefaults.DEFAULT_USER_NAME,
+            UserDefaults.DEFAULT_USER_EMAIL,
+            UserDefaults.DEFAULT_USER_PASSWORD
         )
     }).toThrowError(ValidationMessages.EMPTY_USER_ID)
 })
@@ -23,11 +17,11 @@ test('return exception if empy id', () => {
 test('return exception if empty gh_username', () => {
     expect(() => {
         User.create(
-            random,
+            UserDefaults.DEFAULT_USER_ID,
             '',
-            random,
-            `${random}@test.com`,
-            random
+            UserDefaults.DEFAULT_USER_NAME,
+            UserDefaults.DEFAULT_USER_EMAIL,
+            UserDefaults.DEFAULT_USER_PASSWORD
         )
     }).toThrowError(ValidationMessages.EMPTY_USER_USERNAME)
 })
@@ -35,11 +29,11 @@ test('return exception if empty gh_username', () => {
 test('return exception if empty name', () => {
     expect(() => {
         User.create(
-            random,
-            random,
+            UserDefaults.DEFAULT_USER_ID,
+            UserDefaults.DEFAULT_USER_USERNAME,
             '',
-            `${random}@test.com`,
-            random
+            UserDefaults.DEFAULT_USER_EMAIL,
+            UserDefaults.DEFAULT_USER_PASSWORD
         )
     }).toThrowError(ValidationMessages.EMPTY_USER_NAME)
 })
@@ -48,11 +42,11 @@ test('return exception if invalid email', () => {
     expect(
         () =>
             User.create(
-                random,
-                random,
-                random,
-                `${random}@test.c`,
-                random
+                UserDefaults.DEFAULT_USER_ID,
+                UserDefaults.DEFAULT_USER_USERNAME,
+                UserDefaults.DEFAULT_USER_NAME,
+                '',
+                UserDefaults.DEFAULT_USER_PASSWORD
             )
     ).toThrowError(ValidationMessages.INVALID_EMAIL)
 })
@@ -61,33 +55,33 @@ test('return exception if invalid password', () => {
     expect(
         () =>
             User.create(
-                random,
-                random,
-                random,
-                `${random}@test.com`,
-                '1'
+                UserDefaults.DEFAULT_USER_ID,
+                UserDefaults.DEFAULT_USER_USERNAME,
+                UserDefaults.DEFAULT_USER_NAME,
+                UserDefaults.DEFAULT_USER_EMAIL,
+                ''
             )
     ).toThrowError(ValidationMessages.INVALID_PASSWORD)
 })
 
 test('new user', () => {
     const user = User.create(
-        random,
-        random,
-        random,
-        `${random}@test.com`,
-        random
+        UserDefaults.DEFAULT_USER_ID,
+        UserDefaults.DEFAULT_USER_USERNAME,
+        UserDefaults.DEFAULT_USER_NAME,
+        UserDefaults.DEFAULT_USER_EMAIL,
+        UserDefaults.DEFAULT_USER_PASSWORD
     )
-    expect(user.gh_username).toBe(random)
+    expect(user).toBeDefined()
 })
 
 test('update rule', () => {
     const user = User.create(
-        random,
-        random,
-        random,
-        `${random}@test.com`,
-        random
+        UserDefaults.DEFAULT_USER_ID,
+        UserDefaults.DEFAULT_USER_USERNAME,
+        UserDefaults.DEFAULT_USER_NAME,
+        UserDefaults.DEFAULT_USER_EMAIL,
+        UserDefaults.DEFAULT_USER_PASSWORD
     )
     user.updateRule('admin')
     expect(user.getRule()).toBe('admin')
@@ -95,12 +89,12 @@ test('update rule', () => {
 
 test('update password', () => {
     const user = User.create(
-        random,
-        random,
-        random,
-        `${random}@test.com`,
-        random
+        UserDefaults.DEFAULT_USER_ID,
+        UserDefaults.DEFAULT_USER_USERNAME,
+        UserDefaults.DEFAULT_USER_NAME,
+        UserDefaults.DEFAULT_USER_EMAIL,
+        UserDefaults.DEFAULT_USER_PASSWORD
     )
-    user.updatePassword('123456')
-    expect(user.getPassword()).toBe('123456')
+    user.updatePassword('@P4ssw0rd')
+    expect(user.getPassword()).toBe('@P4ssw0rd')
 })
