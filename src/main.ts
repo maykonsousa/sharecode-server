@@ -1,3 +1,4 @@
+import cors from 'cors'
 import express, { NextFunction, Request, Response } from 'express'
 import { CustomError } from './core/exceptions/CustomError'
 import { MissingParamError } from './core/exceptions/MissingParamError'
@@ -95,9 +96,10 @@ const init = async () => {
     const removePostController = new RemovePostController(removePost)
 
     const app = express()
-    const port = process.env.PORT || 3000
+    const port = process.env.PORT || 3001
 
     app.use(express.json())
+    app.use(cors())
 
     new UserRoute(
         app,
