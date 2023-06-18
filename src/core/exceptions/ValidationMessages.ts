@@ -14,4 +14,5 @@ export class ValidationMessages {
     public static readonly TOKEN_ALREADY_REVOKED = 'token already revoked'
     public static readonly REQUIRED_USER_ID = 'id is required'
     public static readonly REQUIRED_RULE = 'rule'
+    public static readonly USER_NOT_FOUND = 'user not found'
 }
