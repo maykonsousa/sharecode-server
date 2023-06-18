@@ -9,6 +9,7 @@ import { AuthenticateUser } from './core/usecases/accounts/AuthenticateUser'
 import { AuthenticateUserGitHub } from './core/usecases/accounts/AuthenticateUserGitHub'
 import { CreateUser } from './core/usecases/accounts/CreateUser'
 import { ForgotPassword } from './core/usecases/accounts/ForgotPassword'
+import { GetUser } from './core/usecases/accounts/GetUser'
 import { GetUserGitHub } from './core/usecases/accounts/GetUserGitHub'
 import { ResetPassword } from './core/usecases/accounts/ResetPassword'
 import { RevokeToken } from './core/usecases/accounts/RevokeToken'
@@ -26,6 +27,7 @@ import { Validator } from './infra/adapters/Validator'
 import { AuthenticateUserController } from './infra/controllers/accounts/AuthenticateUserController'
 import { CreateUserController } from './infra/controllers/accounts/CreateUserController'
 import { ForgotPasswordContoller } from './infra/controllers/accounts/ForgotPasswordContoller'
+import { GetUserController } from './infra/controllers/accounts/GetUserController'
 import { AuthenticateUserGitHubController } from './infra/controllers/accounts/GetUserGitHubController'
 import { ResetPasswordController } from './infra/controllers/accounts/ResetPasswordController'
 import { RevokeTokenController } from './infra/controllers/accounts/RevokeTokenController'
@@ -66,6 +68,7 @@ const init = async () => {
 
     // usecases
     const createUser = new CreateUser(userRepository, hash, queue)
+    const getUser = new GetUser(userRepository)
     const forgotPassword = new ForgotPassword(userRepository, tokenRepository, sign, queue)
     const resetPassword = new ResetPassword(userRepository, tokenRepository, hash, sign)
     const getUserGitHub = new GetUserGitHub(gitHubGateway)
@@ -82,6 +85,7 @@ const init = async () => {
     
     // controllers
     const createUserController = new CreateUserController(createUser)
+    const getUserController = new GetUserController(getUser)
     const authenticateUserController = new AuthenticateUserController(authenticateUser)
     const authenticateUserGitHubController = new AuthenticateUserGitHubController(getUserGitHub, authenticateUserGitHub)
     const forgotPasswordController = new ForgotPasswordContoller(forgotPassword)
@@ -106,7 +110,8 @@ const init = async () => {
         createUserController,
         authenticateUserGitHubController,
         forgotPasswordController,
-        resetPasswordController
+        resetPasswordController,
+        getUserController
     ).init()
 
     new AuthRoute(
