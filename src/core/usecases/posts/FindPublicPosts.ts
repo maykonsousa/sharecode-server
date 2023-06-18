@@ -32,6 +32,7 @@ export class FindPublicPosts {
                     id: post.id,
                     title: post.title,
                     description: post.description,
+                    video_id: post.video_id,
                     user_id: post.user_id,
                     isActive: post.is_active,
                     isPrivate: post.is_private
@@ -52,6 +53,7 @@ type FindPublicPostsOutput = {
     id: string
     title: string
     description: string
+    video_id: string
     user_id: string
     isActive: boolean
     isPrivate: boolean

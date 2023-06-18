@@ -6,6 +6,7 @@ import { FindPostsByUserController } from '../../controllers/posts/FindPostsByUs
 import { FindPostsController } from '../../controllers/posts/FindPostsController'
 import { FindPublicPostsController } from '../../controllers/posts/FindPublicPostsController'
 import { RemovePostController } from '../../controllers/posts/RemovePostController'
+import { CustomRequest } from '../middlewares/AuthMiddleware'
 
 export class PostRoute {
     private router: Router
@@ -38,7 +39,7 @@ export class PostRoute {
             return this.findPostsByUserController.handle(req, res, next)
         })
         
-        this.router.get('/posts/public', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/posts/public', this.middleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
             return this.findPublicPostsController.handle(req, res, next)
         })
         
