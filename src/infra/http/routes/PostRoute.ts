@@ -35,7 +35,7 @@ export class PostRoute {
             return this.findPostsController.handle(req, res, next)
         })
         
-        this.router.get('/posts/user/:id', async (req: Request, res: Response, next: NextFunction) => {
+        this.router.get('/posts/user/:id', this.middleware, async (req: CustomRequest, res: Response, next: NextFunction) => {
             return this.findPostsByUserController.handle(req, res, next)
         })
         
