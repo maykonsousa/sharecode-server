@@ -27,6 +27,8 @@ export class FindPublicPosts {
         const posts = await this.postRepository.findPublicPosts()
         const output: FindPublicPostsOutput[] = []
         for (const post of posts) {
+            const ownerUser = await this.userRepository.find(post.user_id)
+            if (!ownerUser) throw new NotFoundError('user not found')
             output.push(
                 {
                     id: post.id,
@@ -34,6 +36,7 @@ export class FindPublicPosts {
                     description: post.description,
                     video_id: post.video_id,
                     user_id: post.user_id,
+                    user_name: ownerUser.name,
                     isActive: post.is_active,
                     isPrivate: post.is_private
                 }
@@ -55,6 +58,7 @@ type FindPublicPostsOutput = {
     description: string
     video_id: string
     user_id: string
+    user_name: string
     isActive: boolean
     isPrivate: boolean
 }

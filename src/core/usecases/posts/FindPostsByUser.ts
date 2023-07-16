@@ -36,12 +36,16 @@ export class FindPostsByUser {
         const posts = await this.postRepository.findByUser(existsUser.id)
         const output: FindPostsByUserOutput[] = []
         for (const post of posts) {
+            const ownerUser = await this.userRepository.find(post.user_id)
+            if (!ownerUser) throw new NotFoundError('user not found')
             output.push(
                 {
                     id: post.id,
                     title: post.title,
                     description: post.description,
+                    video_id: post.video_id,
                     user_id: post.user_id,
+                    user_name: ownerUser.name,
                     isActive: post.is_active,
                     isPrivate: post.is_private
                 }
@@ -60,6 +64,8 @@ type FindPostsByUserOutput = {
     id: string
     title: string
     description: string
+    video_id: string
+    user_name: string
     user_id: string
     isActive: boolean
     isPrivate: boolean
