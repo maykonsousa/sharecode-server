@@ -8,4 +8,8 @@ export class Post {
         public is_private: boolean,
         public is_active: boolean
     ) { }
+
+    activePost(): void {
+        this.is_active = true
+    }
 }

@@ -1,7 +1,7 @@
 import { randomUUID } from 'crypto'
 import { Post } from '../../src/core/domain/Post'
 
-test('new post', () => {
+describe('Post', () => {
     const post = new Post(
         randomUUID(),
         randomUUID(),
@@ -9,7 +9,15 @@ test('new post', () => {
         'Teste',
         'teste unitário post',
         false,
-        true
+        false
     )
-    expect(post.title).toBe('Teste')
+
+    it('Defined post', () => {
+        expect(post).toBeDefined()
+    })
+
+    it('Active post', () => {
+        post.activePost()
+        expect(post.is_active).toBeTruthy()
+    })
 })

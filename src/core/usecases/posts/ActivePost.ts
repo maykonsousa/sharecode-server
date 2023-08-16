@@ -36,17 +36,8 @@ export class ActivePost {
         const existingUser = await this.userRepository.find(id)
         if (!existingUser) throw new NotFoundError('user not found')
         if (existingUser.getRule() === 'user') throw new CustomError(403, 'not allowed')
-        const IS_ACTIVE = true
-        const post = new Post(
-            existsPost.id,
-            existsPost.user_id,
-            existsPost.video_id,
-            existsPost.title,
-            existsPost.description,
-            existsPost.is_private,
-            IS_ACTIVE
-        )
-        await this.postRepository.update(post)
+        existsPost.activePost()
+        await this.postRepository.update(existsPost)
     }
 }
 
